@@ -132,7 +132,7 @@
         /* --- DESKTOP ICONS --- */
         .icon-grid {
             position: absolute; 
-            top: 45px; /* Spacing to prevent overlap with top edge */
+            top: 45px; 
             left: 20px;
             display: grid;
             grid-template-columns: repeat(auto-fill, var(--icon-spacing-x));
@@ -152,9 +152,7 @@
             padding: 5px;
         }
 
-        .desktop-icon:hover .icon-label {
-            background-color: #0a5fcf;
-        }
+        .desktop-icon:hover .icon-label { background-color: #0a5fcf; }
         
         .icon-display {
             width: var(--icon-size); 
@@ -171,14 +169,9 @@
         }
 
         .icon-label {
-            color: white; 
-            font-size: 11px; 
-            text-shadow: 1px 1px 1px black;
-            padding: 2px 4px; 
-            border-radius: 2px;
-            max-width: 100%; 
-            word-wrap: break-word;
-            line-height: 1.2;
+            color: white; font-size: 11px; text-shadow: 1px 1px 1px black;
+            padding: 2px 4px; border-radius: 2px;
+            max-width: 100%; word-wrap: break-word; line-height: 1.2;
         }
 
         /* --- WINDOWS --- */
@@ -213,7 +206,7 @@
             display: flex; flex-direction: column;
         }
 
-        /* --- CMS / CONTROL PANEL SPECIFIC --- */
+        /* --- CMS / CONTROL PANEL --- */
         .cp-container { display: flex; min-height: 500px; width: 750px; background: white; }
         .cp-sidebar {
             width: 180px;
@@ -223,10 +216,7 @@
         }
         .cp-main { flex: 1; padding: 20px; overflow-y: auto; }
         
-        .cp-box {
-            background: white; border: 1px solid #7a9ee0; border-radius: 5px;
-            padding: 10px; margin-bottom: 20px;
-        }
+        .cp-box { background: white; border: 1px solid #7a9ee0; border-radius: 5px; padding: 10px; margin-bottom: 20px; }
         .cp-box-title { font-weight: bold; color: #003096; font-size: 13px; margin-bottom: 10px; }
         .cp-link { color: #003096; font-size: 12px; cursor: pointer; text-decoration: none; display: block; margin-bottom: 5px; }
         .cp-link:hover { text-decoration: underline; }
@@ -236,52 +226,39 @@
             display: flex; align-items: center; cursor: pointer; font-size: 13px; font-weight: bold;
         }
         .cms-list-item:hover { background: #f0f0f0; }
-        .cms-list-item::before { content: '✎'; margin-right: 10px; }
 
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 5px; }
-        .form-group input, .form-group textarea, .form-group select {
-            width: 100%; padding: 5px; border: 1px solid #919b9c; font-family: inherit;
-        }
-        .form-actions { display: flex; gap: 10px; margin-top: 20px; }
+        .form-group input, .form-group textarea { width: 100%; padding: 5px; border: 1px solid #919b9c; font-family: inherit; }
+        
         .btn { padding: 5px 15px; cursor: pointer; border: 1px solid #919b9c; background: #eee; font-size: 11px; }
         .btn-primary { background: var(--xp-blue); color: white; border-color: #003096; }
-        .btn-danger { background: #e81123; color: white; border-color: #900; }
+        .btn-success { background: #218521; color: white; border-color: #1a631a; }
 
-        /* Project View Specifics */
         .project-content { padding: 20px; color: #333; }
         .media-container { width: 100%; aspect-ratio: 16/9; background: #000; margin: 15px 0; border: 1px solid #ccc; }
         .media-container iframe { width: 100%; height: 100%; border: none; }
 
-        /* Paint Specifics */
-        .paint-toolbar { background: #f0f0f0; padding: 5px; display: flex; gap: 5px; border-bottom: 1px solid #ccc; }
-        .color-opt { width: 20px; height: 20px; cursor: pointer; border: 1px solid #000; }
-        canvas { cursor: crosshair; background: #fff; }
-
-        /* Login Modal */
         #loginModal {
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
             background: var(--window-bg); border: 3px solid #0058e6; border-radius: 8px 8px 0 0;
             z-index: 20000; display: none; width: 300px; padding: 2px;
         }
 
-        /* Status Toast */
-        #status-toast {
-            position: fixed; bottom: 50px; right: 20px; background: rgba(0,0,0,0.8);
-            color: white; padding: 10px 20px; border-radius: 5px; z-index: 100000;
-            font-size: 12px; display: none;
-        }
+        canvas { cursor: crosshair; background: #fff; }
+        .paint-toolbar { background: #f0f0f0; padding: 5px; display: flex; gap: 5px; border-bottom: 1px solid #ccc; }
+        .color-opt { width: 20px; height: 20px; cursor: pointer; border: 1px solid #000; }
 
+        #export-window {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 80%; height: 80%; z-index: 30000; display: none;
+        }
     </style>
 </head>
 <body>
 
     <div class="desktop" id="desktop">
-        
-        <div class="icon-grid" id="iconGrid">
-            <!-- Icons generated via script -->
-        </div>
-
+        <div class="icon-grid" id="iconGrid"></div>
         <div id="project-windows-container"></div>
 
         <!-- PAINT WINDOW -->
@@ -296,34 +273,9 @@
                     <div class="color-opt" style="background:red" onclick="setPaintColor('red')"></div>
                     <div class="color-opt" style="background:blue" onclick="setPaintColor('blue')"></div>
                     <div class="color-opt" style="background:green" onclick="setPaintColor('green')"></div>
-                    <div class="color-opt" style="background:yellow" onclick="setPaintColor('yellow')"></div>
-                    <div class="color-opt" style="background:white; border: 1px solid #ccc;" onclick="setPaintColor('white')"></div>
                     <button class="btn" style="padding:2px 8px" onclick="clearPaint()">Clear</button>
                 </div>
                 <canvas id="paintCanvas" width="500" height="350"></canvas>
-            </div>
-        </div>
-
-        <!-- START MENU -->
-        <div class="start-menu" id="startMenu">
-            <div class="start-header">
-                <div class="user-icon">👤</div>
-                <span>Maximiliano G.</span>
-            </div>
-            <div class="start-columns">
-                <div class="start-left" id="startLeft">
-                    <div class="menu-item" onclick="openWindow('win-paint')">🎨 Paint</div>
-                    <div class="menu-item" onclick="showStatus('Notepad coming soon...')">📝 Notepad</div>
-                </div>
-                <div class="start-right">
-                    <div class="menu-item" style="font-weight:bold">My Projects</div>
-                    <hr style="border:0; border-top:1px solid #91b0df; margin: 5px 10px;">
-                    <div class="menu-item" onclick="promptLogin()">🛠️ Control Panel</div>
-                    <div class="menu-item" onclick="showStatus('Help center offline.')">Help and Support</div>
-                </div>
-            </div>
-            <div class="start-footer">
-                <button class="footer-btn">🔴 Turn Off</button>
             </div>
         </div>
 
@@ -337,13 +289,14 @@
                 <div class="cp-container">
                     <div class="cp-sidebar">
                         <div class="cp-box">
-                            <div class="cp-box-title">Control Panel</div>
+                            <div class="cp-box-title">CMS Tasks</div>
                             <div class="cp-link" onclick="renderCMSList()">All Projects</div>
                             <div class="cp-link" onclick="renderCMSEdit()">+ Add New</div>
                         </div>
                         <div class="cp-box">
-                            <div class="cp-box-title">See Also</div>
-                            <div class="cp-link" onclick="showStatus('System is up to date.')">Windows Update</div>
+                            <div class="cp-box-title">System Settings</div>
+                            <div class="cp-link" onclick="document.getElementById('wallpaperInput').click()">Change Wallpaper</div>
+                            <div class="cp-link" onclick="exportConfig()" style="font-weight:bold; color:#d9534f">💾 Export to GitHub</div>
                         </div>
                     </div>
                     <div class="cp-main" id="cms-main"></div>
@@ -351,732 +304,43 @@
             </div>
         </div>
 
-        <!-- LOGIN MODAL -->
-        <div id="loginModal">
-            <div class="window-header"><span>System Login</span><div class="win-controls"><div class="win-btn win-close" onclick="document.getElementById('loginModal').style.display='none'">X</div></div></div>
-            <div class="window-body" style="padding:15px">
-                <p style="font-size:12px; margin-top:0">Enter Administrator Password:</p>
-                <input type="password" id="passInput" style="width:100%; margin-bottom:10px">
-                <button onclick="checkPass()" style="width:100%">Enter</button>
-            </div>
-        </div>
-
-    </div>
-
-    <div id="status-toast">Saving...</div>
-
-    <input type="file" id="wallpaperInput" style="display:none" accept="image/*">
-    <input type="file" id="projectIconInput" style="display:none" accept="image/*">
-
-    <div class="taskbar">
-        <button class="start-btn" id="startBtn">start</button>
-        <div class="system-tray"><span id="clock">12:00 PM</span></div>
-    </div>
-
-    <!-- Firebase SDK -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // Global state
-        const firebaseConfig = JSON.parse(__firebase_config);
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-
-        let projects = [];
-        let user = null;
-
-        // UI Helpers (Assigned to window for global access)
-        window.showStatus = (msg) => {
-            const toast = document.getElementById('status-toast');
-            toast.innerText = msg;
-            toast.style.display = 'block';
-            setTimeout(() => toast.style.display = 'none', 3000);
-        };
-
-        // --- AUTH ---
-        const initAuth = async () => {
-            try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
-            } catch (error) {
-                console.error("Auth error:", error);
-                showStatus("Auth offline. Using local mode.");
-            }
-        };
-
-        onAuthStateChanged(auth, (u) => {
-            user = u;
-            if (user) setupListeners();
-        });
-
-        // --- FIRESTORE LISTENERS ---
-        const setupListeners = () => {
-            const projectsCol = collection(db, 'artifacts', appId, 'public', 'data', 'projects');
-            onSnapshot(projectsCol, (snapshot) => {
-                projects = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                if (projects.length === 0) {
-                    seedDefaultData();
-                } else {
-                    updateDesktop();
-                }
-            }, (error) => {
-                console.error("Projects listener error:", error);
-                showStatus("Storage error. Check connection.");
-            });
-
-            const settingsDoc = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'appearance');
-            onSnapshot(settingsDoc, (snapshot) => {
-                if (snapshot.exists()) {
-                    const data = snapshot.data();
-                    if (data.wallpaper) document.getElementById('desktop').style.backgroundImage = `url(${data.wallpaper})`;
-                }
-            });
-        };
-
-        const seedDefaultData = async () => {
-            showStatus("Seeding portfolio...");
-            const defaultProjects = [
-                { brand: 'Writer + ACD', title: 'About Me', icon: '👤', desc: "Found my calling as a writer through some truly cringey Tumblr blogs about music and culture. Since then I've led teams and campaigns from first concept to award wins.", stats: 'Maximiliano Gaudelli', video: '' },
-                { brand: 'KDDI Japan', title: 'Virtual Shibuya Halloween', icon: '🎃', desc: 'A virtual Shibuya City for the largest ever Halloween gathering.', stats: '3x The Drum awards | $20M Earned Media', video: '' },
-                { brand: 'Uber Eats', title: 'Smart Spokes', icon: '🚲', desc: 'Uber Eats bikes equipped with Gyrokinetic LEDs turning wheels into digital screens.', stats: '2x D&AD Graphite Pencils', video: '' },
-                { brand: 'Apple x T-Mobile', title: 'Mom Knows', icon: '📱', desc: 'Nationwide campaign starring SNL’s Marcello Hernandez.', stats: 'iPhone 16 Pro Launch', video: '' },
-                { brand: 'Samsung x T-Mobile', title: 'Copa America 2024', icon: '⚽', desc: 'National spot celebrating fan rituals.', stats: 'Copa América 2024', video: '' },
-                { brand: 'Apple x T-Mobile', title: 'The Big Giver', icon: '🎁', desc: 'NPI for iPhone 16 launch featuring Marcello Hernandez.', stats: 'Holiday Feature Spot', video: '' },
-                { brand: 'Samsung x T-Mobile', title: 'Galaxy S25 Launch', icon: '✨', desc: 'NPI campaign featuring global superstar Natti Natasha.', stats: 'Galaxy S25/S25+', video: '' },
-                { brand: 'KFC', title: 'Love is in the AI.R', icon: '🍗', desc: 'Brand-led AI social activation for Valentine\'s Day.', stats: 'LATAM Region', video: '' },
-                { brand: 'Audi', title: 'It Matters', icon: '🚗', desc: 'Hispanic market nationwide feature film development.', stats: '2024 Audi SUV Family', video: '' },
-                { brand: 'KFC', title: 'Fingers', icon: '🖐️', desc: 'Region-wide campaign across 42 markets.', stats: 'LATAM + Caribbean', video: '' },
-                { brand: 'Gerber', title: 'Decisiones', icon: '👶', desc: 'Hispanic market feature films.', stats: 'Gerber Experts Platform', video: '' },
-                { brand: 'Subway', title: 'Moving', icon: '🥪', desc: 'Nationwide launch of BOGO Meal Deals.', stats: 'Nationwide Launch', video: '' },
-                { brand: 'T-Mobile', title: 'Nailed It', icon: '💅', desc: 'Carrier nationwide release for 5-Year plan Guarantee.', stats: 'Nationwide Release', video: '' },
-                { brand: 'Chubb Insurance', title: 'No piensas en Chubb', icon: '🛡️', desc: 'Regional Manifesto refresh.', stats: 'LATAM Region', video: '' }
-            ];
-
-            for (let p of defaultProjects) {
-                const id = p.title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
-                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'projects', id), p);
-            }
-        };
-
-        // --- CORE UI LOGIC ---
-        window.updateDesktop = () => {
-            const grid = document.getElementById('iconGrid');
-            grid.innerHTML = '';
-            
-            // System App: Paint
-            const paintIcon = document.createElement('div');
-            paintIcon.className = 'desktop-icon';
-            paintIcon.onclick = () => openWindow('win-paint');
-            paintIcon.innerHTML = `<div class="icon-display">🎨</div><div class="icon-label">Paint</div>`;
-            grid.appendChild(paintIcon);
-
-            // Dynamic Projects
-            projects.forEach(p => {
-                const icon = document.createElement('div');
-                icon.className = 'desktop-icon';
-                icon.onclick = () => openProjectWindow(p.id);
-                const iconStyle = p.customIcon ? `background-image:url(${p.customIcon})` : '';
-                icon.innerHTML = `
-                    <div class="icon-display" style="${iconStyle}">${p.customIcon ? '' : (p.icon || '📂')}</div>
-                    <div class="icon-label">${p.title}</div>
-                `;
-                grid.appendChild(icon);
-            });
-            
-            if (document.getElementById('control-panel').style.display === 'flex') renderCMSList();
-        };
-
-        window.openProjectWindow = (id) => {
-            const p = projects.find(proj => proj.id === id);
-            if (!p) return;
-            
-            let winId = `win-${id}`;
-            let win = document.getElementById(winId);
-            if (!win) {
-                win = document.createElement('div');
-                win.id = winId;
-                win.className = 'window';
-                win.style.width = '600px';
-                win.style.top = '100px';
-                win.style.left = '200px';
-                document.getElementById('project-windows-container').appendChild(win);
-            }
-            
-            let videoHtml = `<div class="media-container" style="display:flex; align-items:center; justify-content:center; color:#999; font-size:12px">No Media Linked</div>`;
-            if (p.video) {
-                if (p.video.includes('youtube.com') || p.video.includes('youtu.be')) {
-                    const vidId = p.video.split('v=')[1] || p.video.split('/').pop().split('?')[0];
-                    videoHtml = `<div class="media-container"><iframe src="https://www.youtube.com/embed/${vidId}"></iframe></div>`;
-                } else if (p.video.includes('vimeo.com')) {
-                    const vidId = p.video.split('/').pop().split('?')[0];
-                    videoHtml = `<div class="media-container"><iframe src="https://player.vimeo.com/video/${vidId}"></iframe></div>`;
-                } else {
-                    videoHtml = `<div class="media-container"><video src="${p.video}" controls style="width:100%; height:100%"></video></div>`;
-                }
-            }
-
-            win.innerHTML = `
-                <div class="window-header">
-                    <span>${p.brand} - ${p.title}</span>
-                    <div class="win-controls"><div class="win-btn win-close" onclick="closeWindow('${winId}')">X</div></div>
-                </div>
-                <div class="window-body">
-                    <div class="project-content">
-                        <p style="text-transform:uppercase; font-size:10px; font-weight:bold; color:#666">${p.brand}</p>
-                        <h2 style="margin-top:2px">${p.title}</h2>
-                        ${videoHtml}
-                        <p style="font-size:13px; line-height:1.4">${p.desc}</p>
-                        <p style="font-size:11px; font-weight:bold; color:var(--xp-blue)">${p.stats || ''}</p>
-                    </div>
-                </div>
-            `;
-            
-            win.style.display = 'flex';
-            focusWindow(winId);
-        };
-
-        window.closeWindow = (id) => { document.getElementById(id).style.display = 'none'; };
-        window.openWindow = (id) => { document.getElementById(id).style.display = 'flex'; focusWindow(id); };
-        window.focusWindow = (id) => {
-            document.querySelectorAll('.window').forEach(w => w.style.zIndex = 100);
-            document.getElementById(id).style.zIndex = 200;
-        };
-
-        // --- CMS LOGIC ---
-        window.renderCMSList = () => {
-            const main = document.getElementById('cms-main');
-            main.innerHTML = `
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px">
-                    <h3 style="margin:0">Pick a project...</h3>
-                    <button class="btn btn-primary" onclick="renderCMSEdit()">+ Add New</button>
-                </div>
-                <div id="cms-list"></div>
-                <hr>
-                <div class="cp-box-title">Display Properties</div>
-                <p style="font-size:12px">Desktop Background:</p>
-                <button class="btn" onclick="document.getElementById('wallpaperInput').click()">Choose File...</button>
-            `;
-            
-            const list = document.getElementById('cms-list');
-            projects.sort((a,b) => a.title.localeCompare(b.title)).forEach(p => {
-                const item = document.createElement('div');
-                item.className = 'cms-list-item';
-                item.innerText = `${p.brand} - ${p.title}`;
-                item.onclick = () => renderCMSEdit(p.id);
-                list.appendChild(item);
-            });
-        };
-
-        let pendingIconData = null;
-        window.renderCMSEdit = (id = null) => {
-            const main = document.getElementById('cms-main');
-            const p = id ? projects.find(proj => proj.id === id) : { brand: '', title: '', desc: '', video: '', icon: '⚙️', stats: '', customIcon: '' };
-            
-            main.innerHTML = `
-                <h3 style="margin-top:0">${id ? 'Edit ' + p.title : 'New Project'}</h3>
-                <div class="form-group">
-                    <label>Title:</label>
-                    <input type="text" id="edit-title" value="${p.title}">
-                </div>
-                <div class="form-group">
-                    <label>Brand / Identity:</label>
-                    <input type="text" id="edit-brand" value="${p.brand}">
-                </div>
-                <div class="form-group">
-                    <label>Role / Stats:</label>
-                    <input type="text" id="edit-stats" value="${p.stats}">
-                </div>
-                <div class="form-group">
-                    <label>Description:</label>
-                    <textarea id="edit-desc" rows="4">${p.desc}</textarea>
-                </div>
-                <div class="form-group">
-                    <label>Media Link (YT/Vimeo/Direct):</label>
-                    <input type="text" id="edit-video" value="${p.video || ''}" placeholder="https://...">
-                </div>
-                <div class="form-group">
-                    <label>Project Icon:</label>
-                    <div style="display:flex; align-items:center; gap:10px">
-                        <div id="icon-preview" style="width:48px; height:48px; border:1px solid #ccc; display:flex; align-items:center; justify-content:center; font-size:24px; background-size:contain; background-position:center; background-repeat:no-repeat; background-image: ${p.customIcon ? 'url('+p.customIcon+')' : 'none'}">${p.customIcon ? '' : (p.icon || '📂')}</div>
-                        <button class="btn" onclick="document.getElementById('projectIconInput').click()">Upload Icon</button>
-                    </div>
-                </div>
-                <div class="form-actions">
-                    <button class="btn btn-primary" onclick="saveProject('${id}')">Apply Changes</button>
-                    ${(id && id !== 'about-me') ? `<button class="btn btn-danger" onclick="deleteProject('${id}')">Delete</button>` : ''}
-                    <button class="btn" onclick="renderCMSList()">Cancel</button>
-                </div>
-            `;
-        };
-
-        document.getElementById('projectIconInput').onchange = (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                if (file.size > 800000) { showStatus("Icon too large (>800kb)"); return; }
-                const reader = new FileReader();
-                reader.onload = (ev) => {
-                    pendingIconData = ev.target.result;
-                    const prev = document.getElementById('icon-preview');
-                    prev.style.backgroundImage = `url(${pendingIconData})`;
-                    prev.innerText = '';
-                };
-                reader.readAsDataURL(file);
-            }
-        };
-
-        window.saveProject = async (id) => {
-            if (!user) { showStatus("Auth error."); return; }
-            const title = document.getElementById('edit-title').value;
-            const brand = document.getElementById('edit-brand').value;
-            const stats = document.getElementById('edit-stats').value;
-            const desc = document.getElementById('edit-desc').value;
-            const video = document.getElementById('edit-video').value;
-            
-            showStatus("Saving...");
-            const targetId = (id && id !== 'null') ? id : title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
-            const projectData = { title, brand, stats, desc, video };
-            if (pendingIconData) projectData.customIcon = pendingIconData;
-            
-            try {
-                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'projects', targetId), projectData, { merge: true });
-                pendingIconData = null;
-                showStatus("Saved.");
-                renderCMSList();
-            } catch (e) {
-                showStatus("Save failed.");
-            }
-        };
-
-        window.deleteProject = async (id) => {
-            if (!confirm('Delete forever?')) return;
-            try {
-                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'projects', id));
-                showStatus("Deleted.");
-                renderCMSList();
-            } catch (e) {
-                showStatus("Delete failed.");
-            }
-        };
-
-        // --- PAINT LOGIC ---
-        const canvas = document.getElementById('paintCanvas');
-        const ctx = canvas.getContext('2d');
-        let painting = false;
-        let paintColor = 'black';
-        window.setPaintColor = (c) => { paintColor = c; };
-        window.clearPaint = () => ctx.clearRect(0, 0, canvas.width, canvas.height);
-        canvas.addEventListener('mousedown', (e) => { painting = true; draw(e); });
-        canvas.addEventListener('mouseup', () => { painting = false; ctx.beginPath(); });
-        canvas.addEventListener('mousemove', draw);
-        function draw(e) {
-            if (!painting) return;
-            const rect = canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            ctx.lineWidth = 5; ctx.lineCap = 'round'; ctx.strokeStyle = paintColor;
-            ctx.lineTo(x, y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x, y);
-        }
-
-        // --- AUTH & SYSTEM ---
-        window.promptLogin = () => {
-            document.getElementById('startMenu').style.display = 'none';
-            document.getElementById('loginModal').style.display = 'block';
-        };
-        window.checkPass = () => {
-            if (document.getElementById('passInput').value === 'bong420') {
-                document.getElementById('loginModal').style.display = 'none';
-                openWindow('control-panel');
-                renderCMSList();
-            } else { showStatus('Access Denied'); }
-        };
-
-        // UI Event Listeners (Independent of Firebase)
-        document.getElementById('startBtn').addEventListener('click', (e) => {
-            e.stopPropagation();
-            const sm = document.getElementById('startMenu');
-            sm.style.display = sm.style.display === 'flex' ? 'none' : 'flex';
-        });
-
-        window.addEventListener('click', () => {
-            document.getElementById('startMenu').style.display = 'none';
-        });
-
-        document.getElementById('wallpaperInput').onchange = async (e) => {
-            const file = e.target.files[0];
-            if (file && user) {
-                const reader = new FileReader();
-                reader.onload = async (ev) => {
-                    showStatus("Saving wallpaper...");
-                    await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'appearance'), { wallpaper: ev.target.result });
-                };
-                reader.readAsDataURL(file);
-            }
-        };
-
-        // Draggable
-        document.addEventListener('mousedown', e => {
-            const header = e.target.closest('.window-header');
-            if (!header) return;
-            const win = header.parentElement;
-            focusWindow(win.id);
-            let offset = { x: e.clientX - win.offsetLeft, y: e.clientY - win.offsetTop };
-            const onMove = moveE => { 
-                win.style.left = (moveE.clientX - offset.x) + 'px'; 
-                win.style.top = (moveE.clientY - offset.y) + 'px'; 
-            };
-            const onUp = () => { 
-                document.removeEventListener('mousemove', onMove); 
-                document.removeEventListener('mouseup', onUp); 
-            };
-            document.addEventListener('mousemove', onMove); 
-            document.addEventListener('mouseup', onUp);
-        });
-
-        // Clock
-        setInterval(() => {
-            document.getElementById('clock').innerText = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        }, 1000);
-
-        initAuth();
-    </script>
-</body>
-</html>            position: relative;
-            z-index: 1;
-        }
-
-        /* --- START MENU --- */
-        .start-menu {
-            position: fixed;
-            bottom: var(--taskbar-height);
-            left: 0;
-            width: var(--start-width);
-            background: white;
-            border-radius: 5px 5px 0 0;
-            box-shadow: 2px -2px 10px rgba(0,0,0,0.3);
-            display: none;
-            flex-direction: column;
-            z-index: 10000;
-            border: 1px solid #003096;
-            overflow: hidden;
-        }
-
-        .start-header {
-            background: linear-gradient(to bottom, #1159d2 0%, #3f8cf3 50%, #1159d2 100%);
-            padding: 10px;
-            display: flex;
-            align-items: center;
-            color: white;
-            font-weight: bold;
-            text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
-            border-bottom: 1px solid #003096;
-        }
-
-        .user-icon {
-            width: 40px; height: 40px;
-            background: #fff;
-            border: 2px solid rgba(255,255,255,0.5);
-            border-radius: 4px;
-            margin-right: 10px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 24px;
-        }
-
-        .start-columns { display: flex; height: 400px; }
-        .start-left { flex: 1.2; background: white; padding: 10px 0; }
-        .start-right { flex: 1; background: #dbeafe; border-left: 2px solid #91b0df; padding: 10px 0; }
-
-        .menu-item {
-            padding: 8px 15px;
-            display: flex;
-            align-items: center;
-            font-size: 12px;
-            cursor: pointer;
-            color: #333;
-        }
-
-        .menu-item:hover { background: #316ac5; color: white; }
-
-        .start-footer {
-            background: linear-gradient(to bottom, #1159d2 0%, #3f8cf3 100%);
-            padding: 8px;
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-        }
-
-        .footer-btn {
-            background: none; border: none; color: white;
-            font-size: 12px; cursor: pointer; display: flex; align-items: center;
-        }
-
-        /* --- TASKBAR --- */
-        .taskbar {
-            position: fixed; bottom: 0; left: 0; width: 100%;
-            height: var(--taskbar-height);
-            background: linear-gradient(to bottom, #245edb 0%, #3f8cf3 9%, #245edb 18%, #245edb 92%, #1941a5 100%);
-            display: flex; align-items: center; z-index: 9999;
-        }
-
-        .start-btn {
-            height: 100%;
-            background: linear-gradient(to bottom, #3dbd3d 0%, #218521 100%);
-            padding: 0 15px;
-            display: flex; align-items: center;
-            color: white; font-weight: bold; font-style: italic; font-size: 16px;
-            border-radius: 0 10px 10px 0;
-            border: none; cursor: pointer;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.3);
-        }
-
-        .system-tray {
-            margin-left: auto;
-            background: linear-gradient(to bottom, #0997ff 0%, #0053ee 100%);
-            height: 100%; display: flex; align-items: center; padding: 0 15px;
-            color: white; font-size: 12px; border-left: 1px solid #0840b3;
-        }
-
-        /* --- DESKTOP ICONS --- */
-        .icon-grid {
-            position: absolute; 
-            top: 20px;
-            left: 10px;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, var(--icon-spacing-x));
-            grid-template-rows: repeat(auto-fill, var(--icon-spacing-y));
-            grid-auto-flow: column;
-            gap: 10px;
-            height: calc(100% - 30px);
-        }
-
-        .desktop-icon { 
-            width: var(--icon-spacing-x); 
-            text-align: center; 
-            cursor: pointer; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center;
-            padding: 5px;
-        }
-
-        .desktop-icon:hover .icon-label {
-            background-color: #0a5fcf;
-        }
-        
-        .icon-display {
-            width: var(--icon-size); 
-            height: var(--icon-size); 
-            font-size: 32px;
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
-            background-size: contain; 
-            background-position: center; 
-            background-repeat: no-repeat;
-            margin-bottom: 6px;
-            filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.3));
-        }
-
-        .icon-label {
-            color: white; 
-            font-size: 11px; 
-            text-shadow: 1px 1px 1px black;
-            padding: 2px 4px; 
-            border-radius: 2px;
-            max-width: 100%; 
-            word-wrap: break-word;
-            line-height: 1.2;
-        }
-
-        /* --- WINDOWS --- */
-        .window {
-            position: absolute;
-            background: var(--window-bg);
-            border: 3px solid #0058e6;
-            border-radius: 8px 8px 0 0;
-            box-shadow: 5px 5px 20px rgba(0,0,0,0.4);
-            display: none;
-            flex-direction: column;
-            z-index: 100;
-        }
-
-        .window-header {
-            background: linear-gradient(to bottom, #0058e6 0%, #003db3 100%);
-            padding: 4px 10px;
-            display: flex; justify-content: space-between; align-items: center;
-            color: white; font-weight: bold; font-size: 12px; cursor: move;
-        }
-
-        .win-controls { display: flex; gap: 2px; }
-        .win-btn {
-            width: 21px; height: 21px; border: 1px solid white; border-radius: 3px;
-            display: flex; align-items: center; justify-content: center; font-size: 10px; cursor: pointer;
-        }
-        .win-close { background: #e81123; }
-
-        .window-body {
-            padding: 0; background: white; margin: 2px; border: 1px solid #919b9c;
-            overflow-y: auto; max-height: 75vh;
-            display: flex; flex-direction: column;
-        }
-
-        /* --- CMS / CONTROL PANEL SPECIFIC --- */
-        .cp-container { display: flex; height: 500px; width: 750px; background: white; }
-        .cp-sidebar {
-            width: 180px;
-            background: linear-gradient(to bottom, #7a9ee0 0%, #b3c8f0 100%);
-            padding: 15px;
-            display: flex; flex-direction: column; gap: 10px;
-        }
-        .cp-main { flex: 1; padding: 20px; overflow-y: auto; }
-        
-        .cp-box {
-            background: white; border: 1px solid #7a9ee0; border-radius: 5px;
-            padding: 10px; margin-bottom: 20px;
-        }
-        .cp-box-title { font-weight: bold; color: #003096; font-size: 13px; margin-bottom: 10px; }
-        .cp-link { color: #003096; font-size: 12px; cursor: pointer; text-decoration: none; display: block; margin-bottom: 5px; }
-        .cp-link:hover { text-decoration: underline; }
-
-        .cms-list-item {
-            border: 1px solid #ccc; padding: 10px; margin-bottom: 5px;
-            display: flex; align-items: center; cursor: pointer; font-size: 13px; font-weight: bold;
-        }
-        .cms-list-item:hover { background: #f0f0f0; }
-        .cms-list-item::before { content: '✎'; margin-right: 10px; }
-
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 5px; }
-        .form-group input, .form-group textarea, .form-group select {
-            width: 100%; padding: 5px; border: 1px solid #919b9c; font-family: inherit;
-        }
-        .form-actions { display: flex; gap: 10px; margin-top: 20px; }
-        .btn { padding: 5px 15px; cursor: pointer; border: 1px solid #919b9c; background: #eee; font-size: 11px; }
-        .btn-primary { background: var(--xp-blue); color: white; border-color: #003096; }
-        .btn-danger { background: #e81123; color: white; border-color: #900; }
-
-        /* Project View Specifics */
-        .project-content { padding: 20px; color: #333; }
-        .media-container { width: 100%; aspect-ratio: 16/9; background: #000; margin: 15px 0; border: 1px solid #ccc; }
-        .media-container iframe { width: 100%; height: 100%; border: none; }
-
-        /* Paint Specifics */
-        .paint-toolbar { background: #f0f0f0; padding: 5px; display: flex; gap: 5px; border-bottom: 1px solid #ccc; }
-        .color-opt { width: 20px; height: 20px; cursor: pointer; border: 1px solid #000; }
-        canvas { cursor: crosshair; background: #fff; }
-
-        /* Login Modal */
-        #loginModal {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: var(--window-bg); border: 3px solid #0058e6; border-radius: 8px 8px 0 0;
-            z-index: 20000; display: none; width: 300px; padding: 2px;
-        }
-
-        /* Status Toast */
-        #status-toast {
-            position: fixed; bottom: 50px; right: 20px; background: rgba(0,0,0,0.8);
-            color: white; padding: 10px 20px; border-radius: 5px; z-index: 100000;
-            font-size: 12px; display: none;
-        }
-
-    </style>
-</head>
-<body>
-
-    <div class="desktop" id="desktop">
-        
-        <div class="icon-grid" id="iconGrid">
-            <!-- Icons generated via script -->
-        </div>
-
-        <div id="project-windows-container"></div>
-
-        <!-- PAINT WINDOW -->
-        <div class="window" id="win-paint" style="width: 500px; top: 120px; left: 120px;">
-            <div class="window-header">
-                <span>Paint - Bong OS</span>
-                <div class="win-controls"><div class="win-btn win-close" onclick="closeWindow('win-paint')">X</div></div>
-            </div>
-            <div class="window-body" style="overflow:hidden">
-                <div class="paint-toolbar">
-                    <div class="color-opt" style="background:black" onclick="setPaintColor('black')"></div>
-                    <div class="color-opt" style="background:red" onclick="setPaintColor('red')"></div>
-                    <div class="color-opt" style="background:blue" onclick="setPaintColor('blue')"></div>
-                    <div class="color-opt" style="background:green" onclick="setPaintColor('green')"></div>
-                    <div class="color-opt" style="background:yellow" onclick="setPaintColor('yellow')"></div>
-                    <div class="color-opt" style="background:white; border: 1px solid #ccc;" onclick="setPaintColor('white')"></div>
-                    <button class="btn" style="padding:2px 8px" onclick="clearPaint()">Clear</button>
-                </div>
-                <canvas id="paintCanvas" width="500" height="350"></canvas>
+        <!-- EXPORT WINDOW -->
+        <div class="window" id="export-window">
+            <div class="window-header"><span>GitHub Export Tool</span><div class="win-controls"><div class="win-btn win-close" onclick="closeWindow('export-window')">X</div></div></div>
+            <div class="window-body" style="padding:20px">
+                <h3>Permanent Save Instructions</h3>
+                <p style="font-size:12px">Copy the code below, go to GitHub, edit your <strong>index.html</strong>, and replace everything with this text.</p>
+                <textarea id="export-area" style="width:100%; height:300px; font-family:monospace; font-size:10px" readonly></textarea>
+                <button class="btn btn-primary" style="margin-top:10px" onclick="copyExport()">Copy to Clipboard</button>
             </div>
         </div>
 
         <!-- START MENU -->
         <div class="start-menu" id="startMenu">
-            <div class="start-header">
-                <div class="user-icon">👤</div>
-                <span>Maximiliano G.</span>
-            </div>
+            <div class="start-header"><div class="user-icon">👤</div><span>Maximiliano G.</span></div>
             <div class="start-columns">
-                <div class="start-left" id="startLeft">
+                <div class="start-left">
                     <div class="menu-item" onclick="openWindow('win-paint')">🎨 Paint</div>
-                    <div class="menu-item" onclick="showStatus('Notepad coming soon...')">📝 Notepad</div>
                 </div>
                 <div class="start-right">
                     <div class="menu-item" style="font-weight:bold">My Projects</div>
                     <hr style="border:0; border-top:1px solid #91b0df; margin: 5px 10px;">
                     <div class="menu-item" onclick="promptLogin()">🛠️ Control Panel</div>
-                    <div class="menu-item" onclick="showStatus('Help center offline.')">Help and Support</div>
                 </div>
             </div>
-            <div class="start-footer">
-                <button class="footer-btn">🔴 Turn Off</button>
-            </div>
-        </div>
-
-        <!-- CMS WINDOW -->
-        <div class="window" id="control-panel" style="top: 50px; left: 50px;">
-            <div class="window-header">
-                <span>Control Panel</span>
-                <div class="win-controls"><div class="win-btn win-close" onclick="closeWindow('control-panel')">X</div></div>
-            </div>
-            <div class="window-body">
-                <div class="cp-container">
-                    <div class="cp-sidebar">
-                        <div class="cp-box">
-                            <div class="cp-box-title">Control Panel</div>
-                            <div class="cp-link" onclick="renderCMSList()">All Projects</div>
-                            <div class="cp-link" onclick="renderCMSEdit()">+ Add New</div>
-                        </div>
-                        <div class="cp-box">
-                            <div class="cp-box-title">See Also</div>
-                            <div class="cp-link" onclick="showStatus('System is up to date.')">Windows Update</div>
-                        </div>
-                    </div>
-                    <div class="cp-main" id="cms-main"></div>
-                </div>
-            </div>
+            <div class="start-footer"><button class="footer-btn">🔴 Turn Off</button></div>
         </div>
 
         <!-- LOGIN MODAL -->
         <div id="loginModal">
-            <div class="window-header"><span>System Login</span><div class="win-controls"><div class="win-btn win-close" onclick="document.getElementById('loginModal').style.display='none'">X</div></div></div>
+            <div class="window-header"><span>System Login</span><div class="win-controls"><div class="win-btn win-close" onclick="closeWindow('loginModal')">X</div></div></div>
             <div class="window-body" style="padding:15px">
-                <p style="font-size:12px; margin-top:0">Enter Administrator Password:</p>
+                <p style="font-size:12px; margin-top:0">Enter Password:</p>
                 <input type="password" id="passInput" style="width:100%; margin-bottom:10px">
                 <button onclick="checkPass()" style="width:100%">Enter</button>
             </div>
         </div>
-
     </div>
-
-    <div id="status-toast">Saving...</div>
 
     <input type="file" id="wallpaperInput" style="display:none" accept="image/*">
     <input type="file" id="projectIconInput" style="display:none" accept="image/*">
@@ -1086,137 +350,61 @@
         <div class="system-tray"><span id="clock">12:00 PM</span></div>
     </div>
 
-    <!-- Firebase SDK -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    <script>
+        // --- CONFIGURATION DATA ---
+        // This is the data you edit. When you Export, this array gets updated in the new code.
+        let projects = [
+            { id: 'about-me', brand: 'Writer + ACD', title: 'About Me', icon: '👤', desc: "Found my calling as a writer through some truly cringey Tumblr blogs about music and culture. Since then I've led teams and campaigns from first concept to award wins.", stats: 'Maximiliano Gaudelli', video: '' },
+            { id: 'kddi', brand: 'KDDI Japan', title: 'Virtual Shibuya Halloween', icon: '🎃', desc: 'A virtual Shibuya City for the largest ever Halloween gathering.', stats: '3x The Drum awards | $20M Earned Media', video: '' },
+            { id: 'uber-eats', brand: 'Uber Eats', title: 'Smart Spokes', icon: '🚲', desc: 'Uber Eats bikes equipped with Gyrokinetic LEDs turning wheels into digital screens.', stats: '2x D&AD Graphite Pencils', video: '' },
+            { id: 'apple-mom', brand: 'Apple x T-Mobile', title: 'Mom Knows', icon: '📱', desc: 'Nationwide campaign starring SNL’s Marcello Hernandez.', stats: 'iPhone 16 Pro Launch', video: '' },
+            { id: 'samsung-copa', brand: 'Samsung x T-Mobile', title: 'Copa America 2024', icon: '⚽', desc: 'National spot celebrating fan rituals.', stats: 'Copa América 2024', video: '' },
+            { id: 'apple-giver', brand: 'Apple x T-Mobile', title: 'The Big Giver', icon: '🎁', desc: 'NPI for iPhone 16 launch featuring Marcello Hernandez.', stats: 'Holiday Feature Spot', video: '' },
+            { id: 'samsung-s25', brand: 'Samsung x T-Mobile', title: 'Galaxy S25 Launch', icon: '✨', desc: 'NPI campaign featuring global superstar Natti Natasha.', stats: 'Galaxy S25/S25+', video: '' },
+            { id: 'kfc-air', brand: 'KFC', title: 'Love is in the AI.R', icon: '🍗', desc: 'Brand-led AI social activation for Valentine\'s Day.', stats: 'LATAM Region', video: '' },
+            { id: 'audi', brand: 'Audi', title: 'It Matters', icon: '🚗', desc: 'Hispanic market nationwide feature film development.', stats: '2024 Audi SUV Family', video: '' },
+            { id: 'kfc-fingers', brand: 'KFC', title: 'Fingers', icon: '🖐️', desc: 'Region-wide campaign across 42 markets.', stats: 'LATAM + Caribbean', video: '' },
+            { id: 'gerber', brand: 'Gerber', title: 'Decisiones', icon: '👶', desc: 'Hispanic market feature films.', stats: 'Gerber Experts Platform', video: '' },
+            { id: 'subway', brand: 'Subway', title: 'Moving', icon: '🥪', desc: 'Nationwide launch of BOGO Meal Deals.', stats: 'Nationwide Launch', video: '' },
+            { id: 't-mobile-nail', brand: 'T-Mobile', title: 'Nailed It', icon: '💅', desc: 'Carrier nationwide release for 5-Year plan Guarantee.', stats: 'Nationwide Release', video: '' },
+            { id: 'chubb', brand: 'Chubb Insurance', title: 'No piensas en Chubb', icon: '🛡️', desc: 'Regional Manifesto refresh.', stats: 'LATAM Region', video: '' }
+        ];
 
-        // Global state and firebase config
-        const firebaseConfig = JSON.parse(__firebase_config);
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-
-        let projects = [];
-        let user = null;
-
-        // UI Helpers
-        window.showStatus = (msg) => {
-            const toast = document.getElementById('status-toast');
-            toast.innerText = msg;
-            toast.style.display = 'block';
-            setTimeout(() => toast.style.display = 'none', 3000);
-        };
-
-        // --- AUTH ---
-        const initAuth = async () => {
-            try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
-            } catch (error) {
-                console.error("Auth error:", error);
-                showStatus("Error authenticating system.");
-            }
-        };
-
-        onAuthStateChanged(auth, (u) => {
-            user = u;
-            if (user) {
-                setupListeners();
-            }
-        });
-
-        // --- FIRESTORE LISTENERS ---
-        const setupListeners = () => {
-            // Listen to Projects
-            const projectsCol = collection(db, 'artifacts', appId, 'public', 'data', 'projects');
-            onSnapshot(projectsCol, (snapshot) => {
-                projects = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                // Default data if empty (first time run)
-                if (projects.length === 0) {
-                    seedDefaultData();
-                } else {
-                    updateDesktop();
-                }
-            }, (error) => {
-                console.error("Projects listener error:", error);
-            });
-
-            // Listen to Settings (Wallpaper)
-            const settingsDoc = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'appearance');
-            onSnapshot(settingsDoc, (snapshot) => {
-                if (snapshot.exists()) {
-                    const data = snapshot.data();
-                    if (data.wallpaper) {
-                        document.getElementById('desktop').style.backgroundImage = `url(${data.wallpaper})`;
-                    }
-                }
-            });
-        };
-
-        const seedDefaultData = async () => {
-            showStatus("Initializing default system data...");
-            const defaultProjects = [
-                { brand: 'Writer + ACD', title: 'About Me', icon: '👤', desc: "Found my calling as a writer through some truly cringey Tumblr blogs about music and culture.", stats: 'Maximiliano Gaudelli', video: '' },
-                { brand: 'KDDI Japan', title: 'Virtual Shibuya Halloween', icon: '🎃', desc: 'As Halloween approached... built a virtual Shibuya City.', stats: '3x The Drum awards | $20M Earned Media', video: '' },
-                { brand: 'Uber Eats', title: 'Smart Spokes', icon: '🚲', desc: 'Uber Eats bikes equipped with Gyrokinetic LEDs.', stats: '2x D&AD Graphite Pencils', video: '' }
-            ];
-
-            for (let p of defaultProjects) {
-                const id = p.title.toLowerCase().replace(/\s+/g, '-');
-                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'projects', id), p);
-            }
-        };
+        let currentWallpaper = '';
 
         // --- CORE UI LOGIC ---
-        window.updateDesktop = () => {
+        function updateDesktop() {
             const grid = document.getElementById('iconGrid');
             grid.innerHTML = '';
             
-            // System Apps First
-            const paintIcon = document.createElement('div');
-            paintIcon.className = 'desktop-icon';
-            paintIcon.onclick = () => openWindow('win-paint');
-            paintIcon.innerHTML = `<div class="icon-display">🎨</div><div class="icon-label">Paint</div>`;
-            grid.appendChild(paintIcon);
+            // Paint Icon
+            const pIcon = document.createElement('div');
+            pIcon.className = 'desktop-icon';
+            pIcon.onclick = () => openWindow('win-paint');
+            pIcon.innerHTML = `<div class="icon-display">🎨</div><div class="icon-label">Paint</div>`;
+            grid.appendChild(pIcon);
 
-            // Dynamic Projects
             projects.forEach(p => {
                 const icon = document.createElement('div');
                 icon.className = 'desktop-icon';
                 icon.onclick = () => openProjectWindow(p.id);
                 const iconStyle = p.customIcon ? `background-image:url(${p.customIcon})` : '';
-                icon.innerHTML = `
-                    <div class="icon-display" style="${iconStyle}">${p.customIcon ? '' : (p.icon || '📂')}</div>
-                    <div class="icon-label">${p.title}</div>
-                `;
+                icon.innerHTML = `<div class="icon-display" style="${iconStyle}">${p.customIcon ? '' : (p.icon || '📂')}</div><div class="icon-label">${p.title}</div>`;
                 grid.appendChild(icon);
             });
             
             if (document.getElementById('control-panel').style.display === 'flex') renderCMSList();
-        };
+        }
 
-        window.openProjectWindow = (id) => {
+        function openProjectWindow(id) {
             const p = projects.find(proj => proj.id === id);
             if (!p) return;
-            
-            let winId = `win-${id}`;
-            let win = document.getElementById(winId);
+            let winId = `win-${id}`, win = document.getElementById(winId);
             if (!win) {
-                win = document.createElement('div');
-                win.id = winId;
-                win.className = 'window';
-                win.style.width = '600px';
-                win.style.top = '100px';
-                win.style.left = '200px';
+                win = document.createElement('div'); win.id = winId; win.className = 'window';
+                win.style.width = '600px'; win.style.top = '100px'; win.style.left = '200px';
                 document.getElementById('project-windows-container').appendChild(win);
             }
-            
             let videoHtml = `<div class="media-container" style="display:flex; align-items:center; justify-content:center; color:#999; font-size:12px">No Media Linked</div>`;
             if (p.video) {
                 if (p.video.includes('youtube.com') || p.video.includes('youtu.be')) {
@@ -1225,241 +413,112 @@
                 } else if (p.video.includes('vimeo.com')) {
                     const vidId = p.video.split('/').pop().split('?')[0];
                     videoHtml = `<div class="media-container"><iframe src="https://player.vimeo.com/video/${vidId}"></iframe></div>`;
-                } else {
-                    videoHtml = `<div class="media-container"><video src="${p.video}" controls style="width:100%; height:100%"></video></div>`;
-                }
+                } else { videoHtml = `<div class="media-container"><video src="${p.video}" controls style="width:100%; height:100%"></video></div>`; }
             }
+            win.innerHTML = `<div class="window-header"><span>${p.brand} - ${p.title}</span><div class="win-controls"><div class="win-btn win-close" onclick="closeWindow('${winId}')">X</div></div></div><div class="window-body"><div class="project-content"><p style="text-transform:uppercase; font-size:10px; font-weight:bold; color:#666">${p.brand}</p><h2 style="margin-top:2px">${p.title}</h2>${videoHtml}<p style="font-size:13px; line-height:1.4">${p.desc}</p><p style="font-size:11px; font-weight:bold; color:var(--xp-blue)">${p.stats || ''}</p></div></div>`;
+            win.style.display = 'flex'; focusWindow(winId);
+        }
 
-            win.innerHTML = `
-                <div class="window-header">
-                    <span>${p.brand} - ${p.title}</span>
-                    <div class="win-controls"><div class="win-btn win-close" onclick="closeWindow('${winId}')">X</div></div>
-                </div>
-                <div class="window-body">
-                    <div class="project-content">
-                        <p style="text-transform:uppercase; font-size:10px; font-weight:bold; color:#666">${p.brand}</p>
-                        <h2 style="margin-top:2px">${p.title}</h2>
-                        ${videoHtml}
-                        <p style="font-size:13px; line-height:1.4">${p.desc}</p>
-                        <p style="font-size:11px; font-weight:bold; color:var(--xp-blue)">${p.stats || ''}</p>
-                    </div>
-                </div>
-            `;
-            
-            win.style.display = 'flex';
-            focusWindow(winId);
-        };
-
-        window.closeWindow = (id) => { document.getElementById(id).style.display = 'none'; };
-        window.openWindow = (id) => { document.getElementById(id).style.display = 'flex'; focusWindow(id); };
-        window.focusWindow = (id) => {
-            document.querySelectorAll('.window').forEach(w => w.style.zIndex = 100);
-            document.getElementById(id).style.zIndex = 200;
-        };
+        function closeWindow(id) { document.getElementById(id).style.display = 'none'; }
+        function openWindow(id) { document.getElementById(id).style.display = 'flex'; focusWindow(id); }
+        function focusWindow(id) { document.querySelectorAll('.window').forEach(w => w.style.zIndex = 100); document.getElementById(id).style.zIndex = 200; }
 
         // --- CMS LOGIC ---
-        window.renderCMSList = () => {
+        function renderCMSList() {
             const main = document.getElementById('cms-main');
-            main.innerHTML = `
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px">
-                    <h3 style="margin:0">Pick a project...</h3>
-                    <button class="btn btn-primary" onclick="renderCMSEdit()">+ Add New</button>
-                </div>
-                <div id="cms-list"></div>
-                <hr>
-                <div class="cp-box-title">Display Properties</div>
-                <p style="font-size:12px">Desktop Background:</p>
-                <button class="btn" onclick="document.getElementById('wallpaperInput').click()">Choose File...</button>
-            `;
-            
+            main.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px"><h3 style="margin:0">Pick a project...</h3><button class="btn btn-primary" onclick="renderCMSEdit()">+ Add New</button></div><div id="cms-list"></div>`;
             const list = document.getElementById('cms-list');
             projects.sort((a,b) => a.title.localeCompare(b.title)).forEach(p => {
-                const item = document.createElement('div');
-                item.className = 'cms-list-item';
-                item.innerText = `${p.brand} - ${p.title}`;
-                item.onclick = () => renderCMSEdit(p.id);
+                const item = document.createElement('div'); item.className = 'cms-list-item';
+                item.innerText = `${p.brand} - ${p.title}`; item.onclick = () => renderCMSEdit(p.id);
                 list.appendChild(item);
             });
-        };
+        }
 
         let pendingIconData = null;
-        window.renderCMSEdit = (id = null) => {
-            const main = document.getElementById('cms-main');
+        function renderCMSEdit(id = null) {
             const p = id ? projects.find(proj => proj.id === id) : { brand: '', title: '', desc: '', video: '', icon: '⚙️', stats: '', customIcon: '' };
-            
-            main.innerHTML = `
-                <h3 style="margin-top:0">${id ? 'Edit ' + p.title : 'New Project'}</h3>
-                <div class="form-group">
-                    <label>Title:</label>
-                    <input type="text" id="edit-title" value="${p.title}">
-                </div>
-                <div class="form-group">
-                    <label>Brand / Identity:</label>
-                    <input type="text" id="edit-brand" value="${p.brand}">
-                </div>
-                <div class="form-group">
-                    <label>Role / Stats:</label>
-                    <input type="text" id="edit-stats" value="${p.stats}">
-                </div>
-                <div class="form-group">
-                    <label>Description:</label>
-                    <textarea id="edit-desc" rows="4">${p.desc}</textarea>
-                </div>
-                <div class="form-group">
-                    <label>Media Link (YT/Vimeo/Direct):</label>
-                    <input type="text" id="edit-video" value="${p.video}" placeholder="https://...">
-                </div>
-                <div class="form-group">
-                    <label>Project Icon:</label>
-                    <div style="display:flex; align-items:center; gap:10px">
-                        <div id="icon-preview" style="width:48px; height:48px; border:1px solid #ccc; display:flex; align-items:center; justify-content:center; font-size:24px; background-size:contain; background-position:center; background-repeat:no-repeat; background-image: ${p.customIcon ? 'url('+p.customIcon+')' : 'none'}">${p.customIcon ? '' : (p.icon || '📂')}</div>
-                        <button class="btn" onclick="document.getElementById('projectIconInput').click()">Upload Icon</button>
-                    </div>
-                </div>
-                <div class="form-actions">
-                    <button class="btn btn-primary" onclick="saveProject('${id}')">Apply Changes</button>
-                    ${(id && id !== 'about-me') ? `<button class="btn btn-danger" onclick="deleteProject('${id}')">Delete</button>` : ''}
-                    <button class="btn" onclick="renderCMSList()">Cancel</button>
-                </div>
-            `;
-        };
+            const main = document.getElementById('cms-main');
+            main.innerHTML = `<h3 style="margin-top:0">${id ? 'Edit ' + p.title : 'New Project'}</h3><div class="form-group"><label>Title:</label><input type="text" id="edit-title" value="${p.title}"></div><div class="form-group"><label>Brand:</label><input type="text" id="edit-brand" value="${p.brand}"></div><div class="form-group"><label>Stats:</label><input type="text" id="edit-stats" value="${p.stats}"></div><div class="form-group"><label>Description:</label><textarea id="edit-desc" rows="4">${p.desc}</textarea></div><div class="form-group"><label>Media Link:</label><input type="text" id="edit-video" value="${p.video || ''}"></div><div class="form-group"><label>Icon:</label><div style="display:flex; align-items:center; gap:10px"><div id="icon-preview" style="width:48px; height:48px; border:1px solid #ccc; background-size:contain; background-position:center; background-repeat:no-repeat; background-image:${p.customIcon ? 'url('+p.customIcon+')' : 'none'}">${p.customIcon ? '' : p.icon}</div><button class="btn" onclick="document.getElementById('projectIconInput').click()">Upload Icon</button></div></div><div class="form-actions"><button class="btn btn-primary" onclick="saveProject('${id}')">Apply Changes</button><button class="btn" onclick="renderCMSList()">Cancel</button></div>`;
+        }
 
         document.getElementById('projectIconInput').onchange = (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                if (file.size > 800000) { showStatus("Icon too large (>800kb)"); return; }
-                const reader = new FileReader();
-                reader.onload = (ev) => {
-                    pendingIconData = ev.target.result;
-                    const prev = document.getElementById('icon-preview');
-                    prev.style.backgroundImage = `url(${pendingIconData})`;
-                    prev.innerText = '';
-                };
-                reader.readAsDataURL(file);
-            }
+            const reader = new FileReader();
+            reader.onload = (ev) => { pendingIconData = ev.target.result; const prev = document.getElementById('icon-preview'); prev.style.backgroundImage = `url(${pendingIconData})`; prev.innerText = ''; };
+            reader.readAsDataURL(e.target.files[0]);
         };
 
-        window.saveProject = async (id) => {
-            if (!user) { showStatus("Authenticating..."); return; }
-            const title = document.getElementById('edit-title').value;
-            const brand = document.getElementById('edit-brand').value;
-            const stats = document.getElementById('edit-stats').value;
-            const desc = document.getElementById('edit-desc').value;
-            const video = document.getElementById('edit-video').value;
-            
-            showStatus("Saving to Cloud...");
-            
-            const targetId = (id && id !== 'null') ? id : title.toLowerCase().replace(/\s+/g, '-');
-            const projectData = { title, brand, stats, desc, video };
-            if (pendingIconData) projectData.customIcon = pendingIconData;
-            
-            try {
-                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'projects', targetId), projectData, { merge: true });
-                pendingIconData = null;
-                showStatus("Saved successfully.");
-                renderCMSList();
-            } catch (e) {
-                console.error(e);
-                showStatus("Error saving to cloud.");
+        function saveProject(id) {
+            const title = document.getElementById('edit-title').value, brand = document.getElementById('edit-brand').value, stats = document.getElementById('edit-stats').value, desc = document.getElementById('edit-desc').value, video = document.getElementById('edit-video').value;
+            if (id && id !== 'null') {
+                const p = projects.find(proj => proj.id === id);
+                Object.assign(p, { title, brand, stats, desc, video });
+                if (pendingIconData) p.customIcon = pendingIconData;
+            } else {
+                projects.push({ id: 'p-' + Date.now(), title, brand, stats, desc, video, icon: '📂', customIcon: pendingIconData });
             }
-        };
+            pendingIconData = null; updateDesktop();
+        }
 
-        window.deleteProject = async (id) => {
-            if (!confirm('Delete this project forever?')) return;
-            showStatus("Deleting...");
-            try {
-                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'projects', id));
-                showStatus("Deleted.");
-                renderCMSList();
-            } catch (e) {
-                showStatus("Error deleting.");
+        // --- EXPORT FUNCTIONALITY (THE BEST PART) ---
+        function exportConfig() {
+            const currentCode = document.documentElement.outerHTML;
+            const projectString = JSON.stringify(projects, null, 4);
+            const wallpaperString = currentWallpaper ? `currentWallpaper = "${currentWallpaper}";` : '';
+            
+            // We use a regex to find the 'let projects = [...];' part of the code and replace it
+            let newCode = currentCode.replace(/let projects = \[[\s\S]*?\];/, `let projects = ${projectString};`);
+            if (currentWallpaper) {
+                newCode = newCode.replace(/let currentWallpaper = '';/, wallpaperString);
+                // Also update the CSS for the background
+                newCode = newCode.replace(/background: url\('%20-11\.webp'\)/, `background: url('${currentWallpaper}')`);
             }
-        };
+
+            document.getElementById('export-area').value = "<!DOCTYPE html>\n" + newCode;
+            openWindow('export-window');
+        }
+
+        function copyExport() {
+            document.getElementById('export-area').select();
+            document.execCommand('copy');
+            alert('Code copied! Now paste this into your GitHub index.html file.');
+        }
 
         // --- PAINT LOGIC ---
-        const canvas = document.getElementById('paintCanvas');
-        const ctx = canvas.getContext('2d');
-        let painting = false;
-        let paintColor = 'black';
-
+        const canvas = document.getElementById('paintCanvas'), ctx = canvas.getContext('2d');
+        let painting = false, paintColor = 'black';
         window.setPaintColor = (c) => { paintColor = c; };
-        window.clearPaint = () => { ctx.clearRect(0, 0, canvas.width, canvas.height); };
-
+        window.clearPaint = () => ctx.clearRect(0, 0, canvas.width, canvas.height);
         canvas.addEventListener('mousedown', (e) => { painting = true; draw(e); });
         canvas.addEventListener('mouseup', () => { painting = false; ctx.beginPath(); });
         canvas.addEventListener('mousemove', draw);
+        function draw(e) { if (!painting) return; const rect = canvas.getBoundingClientRect(); ctx.lineWidth = 5; ctx.lineCap = 'round'; ctx.strokeStyle = paintColor; ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top); ctx.stroke(); ctx.beginPath(); ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top); }
 
-        function draw(e) {
-            if (!painting) return;
-            const rect = canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            ctx.lineWidth = 5; ctx.lineCap = 'round'; ctx.strokeStyle = paintColor;
-            ctx.lineTo(x, y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x, y);
-        }
+        // --- SYSTEM ---
+        function promptLogin() { document.getElementById('startMenu').style.display = 'none'; openWindow('loginModal'); }
+        function checkPass() { if (document.getElementById('passInput').value === 'bong420') { closeWindow('loginModal'); openWindow('control-panel'); renderCMSList(); } else { alert('Access Denied'); } }
 
-        // --- AUTH & SYSTEM ---
-        window.promptLogin = () => {
-            document.getElementById('startMenu').style.display = 'none';
-            document.getElementById('loginModal').style.display = 'block';
-        };
-        window.checkPass = () => {
-            if (document.getElementById('passInput').value === 'bong420') {
-                document.getElementById('loginModal').style.display = 'none';
-                openWindow('control-panel');
-                renderCMSList();
-            } else { showStatus('Access Denied'); }
+        document.getElementById('startBtn').onclick = (e) => { e.stopPropagation(); const sm = document.getElementById('startMenu'); sm.style.display = sm.style.display === 'flex' ? 'none' : 'flex'; };
+        window.onclick = () => document.getElementById('startMenu').style.display = 'none';
+
+        document.getElementById('wallpaperInput').onchange = (e) => {
+            const reader = new FileReader();
+            reader.onload = (ev) => { currentWallpaper = ev.target.result; document.getElementById('desktop').style.backgroundImage = `url(${currentWallpaper})`; };
+            reader.readAsDataURL(e.target.files[0]);
         };
 
         // Draggable
         document.addEventListener('mousedown', e => {
-            const header = e.target.closest('.window-header');
-            if (!header) return;
-            const win = header.parentElement;
-            focusWindow(win.id);
+            const header = e.target.closest('.window-header'); if (!header) return;
+            const win = header.parentElement; focusWindow(win.id);
             let offset = { x: e.clientX - win.offsetLeft, y: e.clientY - win.offsetTop };
-            const onMove = moveE => { 
-                win.style.left = (moveE.clientX - offset.x) + 'px'; 
-                win.style.top = (moveE.clientY - offset.y) + 'px'; 
-            };
-            const onUp = () => { 
-                document.removeEventListener('mousemove', onMove); 
-                document.removeEventListener('mouseup', onUp); 
-            };
-            document.addEventListener('mousemove', onMove); 
-            document.addEventListener('mouseup', onUp);
+            const onMove = moveE => { win.style.left = (moveE.clientX - offset.x) + 'px'; win.style.top = (moveE.clientY - offset.y) + 'px'; };
+            const onUp = () => { document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp); };
+            document.addEventListener('mousemove', onMove); document.addEventListener('mouseup', onUp);
         });
 
-        // Wallpaper
-        document.getElementById('wallpaperInput').onchange = async (e) => {
-            const file = e.target.files[0];
-            if (file && user) {
-                if (file.size > 800000) { showStatus("Image too large (>800kb)"); return; }
-                const reader = new FileReader();
-                reader.onload = async (ev) => {
-                    const dataUrl = ev.target.result;
-                    showStatus("Saving wallpaper...");
-                    await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'appearance'), { wallpaper: dataUrl });
-                };
-                reader.readAsDataURL(file);
-            }
-        };
-
-        // Start Menu
-        document.getElementById('startBtn').onclick = e => {
-            e.stopPropagation();
-            const sm = document.getElementById('startMenu');
-            sm.style.display = sm.style.display === 'flex' ? 'none' : 'flex';
-        };
-        window.onclick = () => document.getElementById('startMenu').style.display = 'none';
-
-        // Clock
-        setInterval(() => {
-            document.getElementById('clock').innerText = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        }, 1000);
-
-        // Start everything
-        initAuth();
+        setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }, 1000);
+        updateDesktop();
     </script>
 </body>
 </html>
