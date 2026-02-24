@@ -3,310 +3,354 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beilos OS | Desktop</title>
+    <title>Bong OS | Desktop</title>
     <style>
-        /* CSS Variables for easy color management */
         :root {
             --xp-blue: #245edb;
-            --xp-green: #3c913c;
+            --xp-orange: #ff8c00;
             --taskbar-height: 40px;
+            --start-width: 380px;
         }
 
-        * {
-            box-sizing: border-box;
-            user-select: none;
-        }
+        * { box-sizing: border-box; user-select: none; }
 
         body, html {
-            height: 100%;
-            margin: 0;
-            padding: 0;
+            height: 100%; margin: 0; padding: 0;
             font-family: 'Tahoma', 'Segoe UI', sans-serif;
             overflow: hidden;
         }
 
-        /* The Background - Updated to use the Star Tree aesthetic from your image */
+        /* The Desktop Background */
         .desktop {
-            height: 100vh;
-            width: 100vw;
-            /* Using a high-quality link that matches the 'Star Tree' vibe from your upload */
-            background: url(' -11.jpg') no-repeat center center fixed;
+            height: 100vh; width: 100vw;
+            background: url('%20-11.jpg') no-repeat center center fixed;
             background-size: cover;
+            background-color: #0078d7;
             position: relative;
+            z-index: 1;
         }
 
-        /* Desktop Icons Container */
-        .icon-grid {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            display: grid;
-            grid-template-columns: repeat(1, 80px);
-            grid-gap: 25px;
-        }
-
-        .desktop-icon {
-            width: 75px;
-            text-align: center;
-            cursor: pointer;
-            transition: transform 0.1s;
-        }
-
-        .desktop-icon:hover .icon-img {
-            filter: brightness(1.2);
-        }
-
-        .icon-img {
-            width: 48px;
-            height: 48px;
-            margin-bottom: 5px;
-            filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.5));
-        }
-
-        .icon-label {
-            color: white;
-            font-size: 11px;
-            text-shadow: 1px 1px 2px black, 0 0 5px rgba(0,0,0,0.8);
-            padding: 2px;
-            border-radius: 2px;
-        }
-
-        /* Windows XP Style Taskbar */
-        .taskbar {
+        /* --- START MENU STYLES --- */
+        .start-menu {
             position: fixed;
-            bottom: 0;
+            bottom: var(--taskbar-height);
             left: 0;
-            width: 100%;
-            height: var(--taskbar-height);
-            background: linear-gradient(to bottom, #245edb 0%, #3f8cf3 9%, #245edb 18%, #245edb 92%, #1941a5 100%);
+            width: var(--start-width);
+            background: white;
+            border-radius: 5px 5px 0 0;
+            box-shadow: 2px -2px 10px rgba(0,0,0,0.3);
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            z-index: 10000;
+            border: 1px solid #003096;
+            overflow: hidden;
+        }
+
+        /* Blue Top Header */
+        .start-header {
+            background: linear-gradient(to bottom, #1159d2 0%, #3f8cf3 50%, #1159d2 100%);
+            padding: 10px;
             display: flex;
             align-items: center;
-            z-index: 9999;
-            border-top: 1px solid #003096;
+            color: white;
+            font-weight: bold;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+            border-bottom: 1px solid #003096;
+        }
+
+        .user-icon {
+            width: 40px; height: 40px;
+            background: #fff;
+            border: 2px solid rgba(255,255,255,0.5);
+            border-radius: 4px;
+            margin-right: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px;
+        }
+
+        /* The Two Columns */
+        .start-columns {
+            display: flex;
+            height: 350px;
+        }
+
+        .start-left {
+            flex: 1.2;
+            background: white;
+            padding: 10px 0;
+        }
+
+        .start-right {
+            flex: 1;
+            background: #dbeafe; /* Classic light blue-ish right side */
+            border-left: 2px solid #91b0df;
+            padding: 10px 0;
+        }
+
+        .menu-item {
+            padding: 8px 15px;
+            display: flex;
+            align-items: center;
+            font-size: 12px;
+            cursor: pointer;
+            color: #333;
+        }
+
+        .menu-item:hover {
+            background: #316ac5;
+            color: white;
+        }
+
+        .menu-item i { margin-right: 10px; font-size: 16px; }
+
+        .start-footer {
+            background: linear-gradient(to bottom, #1159d2 0%, #3f8cf3 100%);
+            padding: 8px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .footer-btn {
+            background: none; border: none; color: white;
+            font-size: 12px; cursor: pointer; display: flex; align-items: center;
+        }
+
+        /* --- REST OF OS STYLES --- */
+        .taskbar {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            height: var(--taskbar-height);
+            background: linear-gradient(to bottom, #245edb 0%, #3f8cf3 9%, #245edb 18%, #245edb 92%, #1941a5 100%);
+            display: flex; align-items: center; z-index: 9999;
         }
 
         .start-btn {
             height: 100%;
             background: linear-gradient(to bottom, #3dbd3d 0%, #218521 100%);
-            padding: 0 20px 0 10px;
-            display: flex;
-            align-items: center;
-            color: white;
-            font-weight: bold;
-            font-style: italic;
-            font-size: 16px;
+            padding: 0 15px;
+            display: flex; align-items: center;
+            color: white; font-weight: bold; font-style: italic; font-size: 16px;
             border-radius: 0 10px 10px 0;
+            border: none; cursor: pointer;
             box-shadow: 2px 0 5px rgba(0,0,0,0.3);
-            cursor: pointer;
-            border: none;
-            border-right: 1px solid #1a631a;
         }
 
-        .start-btn:hover {
-            filter: brightness(1.1);
-        }
-
-        .taskbar-items {
-            display: flex;
-            margin-left: 10px;
-            gap: 5px;
-        }
+        .start-btn:active { box-shadow: inset 2px 2px 5px rgba(0,0,0,0.5); }
 
         .system-tray {
             margin-left: auto;
             background: linear-gradient(to bottom, #0997ff 0%, #0053ee 100%);
-            height: 100%;
-            display: flex;
-            align-items: center;
-            padding: 0 15px;
-            color: white;
-            font-size: 12px;
-            border-left: 1px solid #0840b3;
+            height: 100%; display: flex; align-items: center; padding: 0 15px;
+            color: white; font-size: 12px; border-left: 1px solid #0840b3;
         }
 
-        /* The Windows */
-        .window {
-            position: absolute;
-            top: 100px;
-            left: 200px;
-            width: 450px;
+        .icon-grid {
+            position: absolute; top: 20px; left: 20px;
+            display: flex; flex-direction: column; gap: 20px;
+        }
+
+        .desktop-icon { 
+            width: 75px; 
+            text-align: center; 
+            cursor: pointer; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .icon-display {
+            width: 48px;
+            height: 48px;
+            font-size: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            margin-bottom: 4px;
+        }
+
+        .icon-label {
+            color: white; font-size: 11px; text-shadow: 1px 1px 2px black;
+            padding: 2px; background: rgba(0,0,0,0.2); border-radius: 2px;
+        }
+
+        /* Simple Modal for Icon Selection */
+        #iconSelectorModal {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
             background: #ece9d8;
             border: 3px solid #0058e6;
             border-radius: 8px 8px 0 0;
-            box-shadow: 5px 5px 15px rgba(0,0,0,0.4);
+            padding: 0;
+            z-index: 20000;
             display: none;
-            flex-direction: column;
-            z-index: 100;
+            width: 300px;
+            box-shadow: 5px 5px 20px rgba(0,0,0,0.5);
         }
-
-        .window-header {
+        .modal-header {
             background: linear-gradient(to bottom, #0058e6 0%, #003db3 100%);
             padding: 5px 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             color: white;
             font-weight: bold;
             font-size: 13px;
-            cursor: move;
+            display: flex; justify-content: space-between;
         }
-
-        .window-controls {
-            display: flex;
-            gap: 2px;
-        }
-
-        .win-btn {
-            width: 22px;
-            height: 22px;
-            border: 1px solid white;
-            border-radius: 3px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 10px;
-            cursor: pointer;
-        }
-
-        .win-close { background: #e81123; }
-        .win-min { background: #3c913c; }
-
-        .window-body {
-            padding: 20px;
-            min-height: 200px;
-            background: white;
-            margin: 2px;
-            border: 1px solid #919b9c;
-            color: #333;
-        }
+        .modal-body { padding: 15px; background: white; margin: 2px; border: 1px solid #919b9c; }
+        .modal-body select { width: 100%; padding: 5px; margin-bottom: 15px; }
+        .modal-body button { padding: 5px 15px; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div class="desktop" id="desktop">
         
-        <!-- Desktop Icons -->
-        <div class="icon-grid">
-            <div class="desktop-icon" onclick="openWindow('beilosWindow')">
-                <div class="icon-img">☕</div>
+        <div class="icon-grid" id="iconGrid">
+            <div class="desktop-icon" id="icon-beilos" onclick="alert('Coffee Manager Opening...')">
+                <div class="icon-display">☕</div>
                 <div class="icon-label">Beilos.exe</div>
             </div>
-            <div class="desktop-icon" onclick="openWindow('agentWindow')">
-                <div class="icon-img">🤖</div>
-                <div class="icon-label">AI Agent</div>
-            </div>
-            <div class="desktop-icon" onclick="openWindow('myComputer')">
-                <div class="icon-img">💻</div>
-                <div class="icon-label">My Computer</div>
-            </div>
+            <!-- More projects can be added here -->
         </div>
 
-        <!-- Beilos App Window -->
-        <div class="window" id="beilosWindow">
-            <div class="window-header">
-                <span>Beilos Coffee - Shop Manager</span>
-                <div class="window-controls">
-                    <div class="win-btn win-min">_</div>
-                    <div class="win-btn win-close" onclick="closeWindow('beilosWindow')">X</div>
+        <!-- START MENU -->
+        <div class="start-menu" id="startMenu">
+            <div class="start-header">
+                <div class="user-icon">👤</div>
+                <span>Max G.</span>
+            </div>
+            <div class="start-columns">
+                <div class="start-left">
+                    <div class="menu-item" onclick="alert('Internet Explorer coming soon...')">🌐 Internet Explorer</div>
+                    <div class="menu-item" onclick="alert('Email coming soon...')">📧 Outlook Express</div>
+                    <hr style="border: 0; border-top: 1px solid #eee;">
+                    <div class="menu-item">📝 Notepad</div>
+                    <div class="menu-item">🎨 Paint</div>
+                </div>
+                <div class="start-right">
+                    <div class="menu-item" style="font-weight: bold;">My Documents</div>
+                    <div class="menu-item" style="font-weight: bold;">My Pictures</div>
+                    <hr style="border: 0; border-top: 1px solid #91b0df; margin: 5px 10px;">
+                    <div class="menu-item">Control Panel</div>
+                    <!-- WALLPAPER SETTING -->
+                    <div class="menu-item" onclick="triggerWallpaperUpload()" style="color: #003096;">🖼️ Change Wallpaper</div>
+                    <!-- ICON SETTING -->
+                    <div class="menu-item" onclick="openIconSelector()" style="color: #003096;">📁 Replace Icon</div>
+                    <div class="menu-item">Help and Support</div>
                 </div>
             </div>
-            <div class="window-body">
-                <h3>☕ Beilos Shop Status</h3>
-                <p>Welcome to the Beilos Coffee interface. Once your Raspberry Pi is connected, you can track orders and agent performance here.</p>
-                <hr>
-                <p><strong>System Message:</strong> Waiting for hardware handshake...</p>
-            </div>
-        </div>
-
-        <!-- AI Agent Window -->
-        <div class="window" id="agentWindow">
-            <div class="window-header">
-                <span>Agent Terminal - OpenClaw v1.0</span>
-                <div class="window-controls">
-                    <div class="win-btn win-min">_</div>
-                    <div class="win-btn win-close" onclick="closeWindow('agentWindow')">X</div>
-                </div>
-            </div>
-            <div class="window-body" style="background: #000; color: #0f0; font-family: monospace;">
-                <p>> System boot initiated...</p>
-                <p>> Loading design trends...</p>
-                <p>> Awaiting input from Raspberry Pi...</p>
-                <p>> _</p>
-            </div>
-        </div>
-
-        <!-- My Computer Window -->
-        <div class="window" id="myComputer">
-            <div class="window-header">
-                <span>My Computer</span>
-                <div class="window-controls">
-                    <div class="win-btn win-min">_</div>
-                    <div class="win-btn win-close" onclick="closeWindow('myComputer')">X</div>
-                </div>
-            </div>
-            <div class="window-body">
-                <p><strong>Drives:</strong></p>
-                <p>💽 System (C:)</p>
-                <p>💿 Raspberry_Pi (D:)</p>
+            <div class="start-footer">
+                <button class="footer-btn">🔑 Log Off</button>
+                <button class="footer-btn">🔴 Turn Off</button>
             </div>
         </div>
 
     </div>
 
-    <!-- The Taskbar -->
+    <!-- ICON SELECTOR MODAL -->
+    <div id="iconSelectorModal">
+        <div class="modal-header">
+            <span>Bong OS - Icon Manager</span>
+            <span style="cursor:pointer" onclick="closeIconSelector()">X</span>
+        </div>
+        <div class="modal-body">
+            <p style="font-size: 12px; margin-top: 0;">Select project to modify:</p>
+            <select id="targetIconSelect">
+                <option value="icon-beilos">Beilos.exe</option>
+            </select>
+            <button onclick="triggerIconUpload()">Upload Image...</button>
+        </div>
+    </div>
+
+    <!-- Hidden Inputs -->
+    <input type="file" id="wallpaperInput" style="display: none;" accept="image/*">
+    <input type="file" id="iconInput" style="display: none;" accept="image/*">
+
     <div class="taskbar">
-        <button class="start-btn" onclick="console.log('Start Menu Clicked')">start</button>
-        <div class="taskbar-items" id="taskbar-items"></div>
+        <button class="start-btn" id="startBtn">start</button>
         <div class="system-tray">
             <span id="clock">12:00 PM</span>
         </div>
     </div>
 
     <script>
-        // Open/Close Window Logic
-        function openWindow(id) {
-            const win = document.getElementById(id);
-            win.style.display = 'flex';
-            document.querySelectorAll('.window').forEach(w => w.style.zIndex = 100);
-            win.style.zIndex = 200;
+        const startBtn = document.getElementById('startBtn');
+        const startMenu = document.getElementById('startMenu');
+        const wallpaperInput = document.getElementById('wallpaperInput');
+        const iconInput = document.getElementById('iconInput');
+        const desktop = document.getElementById('desktop');
+        const iconModal = document.getElementById('iconSelectorModal');
+        const targetIconSelect = document.getElementById('targetIconSelect');
+
+        // Toggle Start Menu
+        startBtn.onclick = (e) => {
+            e.stopPropagation();
+            startMenu.style.display = startMenu.style.display === 'flex' ? 'none' : 'flex';
+        };
+
+        // Close menu if clicking desktop
+        desktop.onclick = () => {
+            startMenu.style.display = 'none';
+            closeIconSelector();
+        };
+
+        // Wallpaper Upload Logic
+        function triggerWallpaperUpload() {
+            startMenu.style.display = 'none';
+            wallpaperInput.click();
         }
 
-        function closeWindow(id) {
-            document.getElementById(id).style.display = 'none';
+        wallpaperInput.onchange = (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    desktop.style.backgroundImage = `url('${event.target.result}')`;
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+
+        // Icon Customization Logic
+        function openIconSelector() {
+            startMenu.style.display = 'none';
+            iconModal.style.display = 'block';
         }
+
+        function closeIconSelector() {
+            iconModal.style.display = 'none';
+        }
+
+        function triggerIconUpload() {
+            iconInput.click();
+        }
+
+        iconInput.onchange = (e) => {
+            const file = e.target.files[0];
+            const targetId = targetIconSelect.value;
+            if (file && targetId) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const iconElement = document.getElementById(targetId).querySelector('.icon-display');
+                    // Remove text/emoji
+                    iconElement.innerText = '';
+                    // Set as background image
+                    iconElement.style.backgroundImage = `url('${event.target.result}')`;
+                    closeIconSelector();
+                };
+                reader.readAsDataURL(file);
+            }
+        };
 
         // Clock Logic
         function updateClock() {
             const now = new Date();
-            const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            document.getElementById('clock').innerText = timeStr;
+            document.getElementById('clock').innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         }
         setInterval(updateClock, 1000);
         updateClock();
-
-        // Make windows draggable
-        document.querySelectorAll('.window-header').forEach(header => {
-            let isDragging = false;
-            let offset = { x: 0, y: 0 };
-            const win = header.parentElement;
-
-            header.addEventListener('mousedown', (e) => {
-                isDragging = true;
-                offset.x = e.clientX - win.offsetLeft;
-                offset.y = e.clientY - win.offsetTop;
-                win.style.zIndex = 201;
-            });
-
-            document.addEventListener('mousemove', (e) => {
-                if (!isDragging) return;
-                win.style.left = (e.clientX - offset.x) + 'px';
-                win.style.top = (e.clientY - offset.y) + 'px';
-            });
-
-            document.addEventListener('mouseup', () => {
-                isDragging = false;
-            });
-        });
     </script>
 </body>
 </html>
