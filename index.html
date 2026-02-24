@@ -10,6 +10,7 @@
             --xp-orange: #ff8c00;
             --taskbar-height: 40px;
             --start-width: 380px;
+            --window-bg: #ece9d8;
         }
 
         * { box-sizing: border-box; user-select: none; }
@@ -18,10 +19,10 @@
             height: 100%; margin: 0; padding: 0;
             font-family: 'Tahoma', 'Segoe UI', sans-serif;
             overflow: hidden;
-            background-color: #000; /* Darker base for better contrast */
+            background-color: #000;
         }
 
-        /* The Desktop Background - Constrained height */
+        /* The Desktop Background */
         .desktop {
             height: calc(100vh - var(--taskbar-height)); 
             width: 100vw;
@@ -32,7 +33,7 @@
             z-index: 1;
         }
 
-        /* --- START MENU STYLES --- */
+        /* --- START MENU --- */
         .start-menu {
             position: fixed;
             bottom: var(--taskbar-height);
@@ -41,14 +42,13 @@
             background: white;
             border-radius: 5px 5px 0 0;
             box-shadow: 2px -2px 10px rgba(0,0,0,0.3);
-            display: none; /* Hidden by default */
+            display: none;
             flex-direction: column;
             z-index: 10000;
             border: 1px solid #003096;
             overflow: hidden;
         }
 
-        /* Blue Top Header */
         .start-header {
             background: linear-gradient(to bottom, #1159d2 0%, #3f8cf3 50%, #1159d2 100%);
             padding: 10px;
@@ -70,24 +70,9 @@
             font-size: 24px;
         }
 
-        /* The Two Columns */
-        .start-columns {
-            display: flex;
-            height: 350px;
-        }
-
-        .start-left {
-            flex: 1.2;
-            background: white;
-            padding: 10px 0;
-        }
-
-        .start-right {
-            flex: 1;
-            background: #dbeafe; /* Classic light blue-ish right side */
-            border-left: 2px solid #91b0df;
-            padding: 10px 0;
-        }
+        .start-columns { display: flex; height: 400px; }
+        .start-left { flex: 1.2; background: white; padding: 10px 0; }
+        .start-right { flex: 1; background: #dbeafe; border-left: 2px solid #91b0df; padding: 10px 0; }
 
         .menu-item {
             padding: 8px 15px;
@@ -98,12 +83,8 @@
             color: #333;
         }
 
-        .menu-item:hover {
-            background: #316ac5;
-            color: white;
-        }
-
-        .menu-item i { margin-right: 10px; font-size: 16px; }
+        .menu-item:hover { background: #316ac5; color: white; }
+        .menu-item strong { margin-left: auto; }
 
         .start-footer {
             background: linear-gradient(to bottom, #1159d2 0%, #3f8cf3 100%);
@@ -118,7 +99,7 @@
             font-size: 12px; cursor: pointer; display: flex; align-items: center;
         }
 
-        /* --- REST OF OS STYLES --- */
+        /* --- TASKBAR --- */
         .taskbar {
             position: fixed; bottom: 0; left: 0; width: 100%;
             height: var(--taskbar-height);
@@ -137,8 +118,6 @@
             box-shadow: 2px 0 5px rgba(0,0,0,0.3);
         }
 
-        .start-btn:active { box-shadow: inset 2px 2px 5px rgba(0,0,0,0.5); }
-
         .system-tray {
             margin-left: auto;
             background: linear-gradient(to bottom, #0997ff 0%, #0053ee 100%);
@@ -146,213 +125,346 @@
             color: white; font-size: 12px; border-left: 1px solid #0840b3;
         }
 
+        /* --- DESKTOP ICONS --- */
         .icon-grid {
-            position: absolute; top: 20px; left: 20px;
-            display: flex; flex-direction: column; gap: 20px;
+            position: absolute; top: 10px; left: 10px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, 85px);
+            grid-template-rows: repeat(auto-fill, 90px);
+            grid-auto-flow: column;
+            gap: 15px;
+            height: 80vh;
         }
 
         .desktop-icon { 
-            width: 75px; 
-            text-align: center; 
-            cursor: pointer; 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            width: 80px; text-align: center; cursor: pointer; 
+            display: flex; flex-direction: column; align-items: center;
         }
         
         .icon-display {
-            width: 48px;
-            height: 48px;
-            font-size: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-size: contain;
-            background-position: center;
-            background-repeat: no-repeat;
+            width: 42px; height: 42px; font-size: 30px;
+            display: flex; align-items: center; justify-content: center;
+            background-size: contain; background-position: center; background-repeat: no-repeat;
             margin-bottom: 4px;
         }
 
         .icon-label {
-            color: white; font-size: 11px; text-shadow: 1px 1px 2px black;
+            color: white; font-size: 10px; text-shadow: 1px 1px 2px black;
             padding: 2px; background: rgba(0,0,0,0.2); border-radius: 2px;
+            max-width: 75px; word-wrap: break-word;
         }
 
-        /* Simple Modal for Icon Selection */
-        #iconSelectorModal {
-            position: fixed;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            background: #ece9d8;
+        /* --- WINDOWS --- */
+        .window {
+            position: absolute;
+            background: var(--window-bg);
             border: 3px solid #0058e6;
             border-radius: 8px 8px 0 0;
-            padding: 0;
-            z-index: 20000;
+            box-shadow: 5px 5px 20px rgba(0,0,0,0.4);
             display: none;
-            width: 300px;
-            box-shadow: 5px 5px 20px rgba(0,0,0,0.5);
+            flex-direction: column;
+            z-index: 100;
+            min-width: 350px;
         }
-        .modal-header {
+
+        .window-header {
             background: linear-gradient(to bottom, #0058e6 0%, #003db3 100%);
-            padding: 5px 10px;
-            color: white;
-            font-weight: bold;
-            font-size: 13px;
-            display: flex; justify-content: space-between;
+            padding: 4px 10px;
+            display: flex; justify-content: space-between; align-items: center;
+            color: white; font-weight: bold; font-size: 12px; cursor: move;
         }
-        .modal-body { padding: 15px; background: white; margin: 2px; border: 1px solid #919b9c; }
-        .modal-body select { width: 100%; padding: 5px; margin-bottom: 15px; }
-        .modal-body button { padding: 5px 15px; cursor: pointer; }
+
+        .win-controls { display: flex; gap: 2px; }
+        .win-btn {
+            width: 21px; height: 21px; border: 1px solid white; border-radius: 3px;
+            display: flex; align-items: center; justify-content: center; font-size: 10px; cursor: pointer;
+        }
+        .win-close { background: #e81123; }
+
+        .window-body {
+            padding: 10px; background: white; margin: 2px; border: 1px solid #919b9c;
+            overflow-y: auto; max-height: 70vh;
+        }
+
+        .media-window {
+            width: 100%; aspect-ratio: 16/9; background: #000;
+            margin: 10px 0; display: flex; align-items: center; justify-content: center;
+            color: #666; font-size: 12px; border: 1px solid #ccc;
+        }
+
+        .media-window iframe { width: 100%; height: 100%; border: none; }
+
+        .project-brand { font-size: 11px; text-transform: uppercase; color: #666; font-weight: bold; }
+        .project-title { font-size: 18px; margin: 2px 0 10px 0; color: #000; }
+        .project-desc { font-size: 12px; line-height: 1.4; color: #333; }
+        .project-stats { margin-top: 10px; font-size: 11px; font-weight: bold; color: var(--xp-blue); }
+
+        /* --- CONTROL PANEL MODAL --- */
+        #loginModal {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: var(--window-bg); border: 3px solid #0058e6; border-radius: 8px 8px 0 0;
+            z-index: 20000; display: none; width: 300px;
+        }
+
+        /* Scrollbar customization for that XP feel */
+        .window-body::-webkit-scrollbar { width: 16px; }
+        .window-body::-webkit-scrollbar-track { background: #f1f1f1; }
+        .window-body::-webkit-scrollbar-thumb { background: #ccc; border: 2px solid #f1f1f1; }
     </style>
 </head>
 <body>
 
     <div class="desktop" id="desktop">
         
+        <!-- Desktop Icons Generated via Script -->
         <div class="icon-grid" id="iconGrid">
-            <div class="desktop-icon" id="icon-beilos" onclick="alert('Coffee Manager Opening...')">
-                <div class="icon-display">☕</div>
-                <div class="icon-label">Beilos.exe</div>
+            <div class="desktop-icon" onclick="openWindow('about-me')">
+                <div class="icon-display">👤</div>
+                <div class="icon-label">About Me</div>
             </div>
-            <!-- More projects can be added here -->
+            <!-- Projects will be injected here -->
         </div>
+
+        <!-- ABOUT ME WINDOW -->
+        <div class="window" id="about-me" style="width: 450px; top: 50px; left: 100px;">
+            <div class="window-header">
+                <span>About Maximiliano Gaudelli</span>
+                <div class="win-controls"><div class="win-btn win-close" onclick="closeWindow('about-me')">X</div></div>
+            </div>
+            <div class="window-body">
+                <h2 style="margin-top:0">Maximiliano Gaudelli</h2>
+                <p class="project-brand">Writer + ACD</p>
+                <p class="project-desc">
+                    Found my calling as a writer through some truly cringey Tumblr blogs about music and culture. Since then I've led teams and campaigns from first concept to award wins. I care deeply about the work. The opposite of nonchalant.
+                </p>
+                <hr>
+                <h4 style="margin-bottom:5px">Experience</h4>
+                <div class="project-desc" style="font-size: 11px;">
+                    <strong>2024-2025:</strong> Senior Copywriter @ The Community Miami<br>
+                    <strong>2022-2024:</strong> ACD @ Dentsu Creative New York<br>
+                    <strong>2020-2022:</strong> Senior Copywriter @ Ogilvy Miami & Mexico<br>
+                    <strong>2018-2020:</strong> Associate Copywriter @ Ogilvy Tokyo<br>
+                    <strong>2014-2016:</strong> Associate Copywriter @ LaFusión Buenos Aires<br>
+                    <strong>Internship:</strong> Culture Intern @ VICE Media Mexico
+                </div>
+                <h4 style="margin-bottom:5px">Education</h4>
+                <div class="project-desc" style="font-size: 11px;">
+                    Portfolio Program @ Miami Ad School (2017-2019)<br>
+                    Digital Mkt. Bootcamp @ Miami Ad School (2021)<br>
+                    AI for Brands Masters @ Miami Ad School (2022-2023)
+                </div>
+            </div>
+        </div>
+
+        <!-- PROJECT WINDOW TEMPLATE -->
+        <div id="project-windows-container"></div>
 
         <!-- START MENU -->
         <div class="start-menu" id="startMenu">
             <div class="start-header">
                 <div class="user-icon">👤</div>
-                <span>Max G.</span>
+                <span>Maximiliano G.</span>
             </div>
             <div class="start-columns">
                 <div class="start-left">
-                    <div class="menu-item" onclick="alert('Internet Explorer coming soon...')">🌐 Internet Explorer</div>
-                    <div class="menu-item" onclick="alert('Email coming soon...')">📧 Outlook Express</div>
-                    <hr style="border: 0; border-top: 1px solid #eee;">
+                    <div class="menu-item" onclick="openWindow('about-me')">👤 About Me</div>
+                    <div class="menu-item" onclick="alert('Opening Browser...')">🌐 Internet Explorer</div>
+                    <hr style="border:0; border-top:1px solid #eee; margin: 5px 10px;">
                     <div class="menu-item">📝 Notepad</div>
                     <div class="menu-item">🎨 Paint</div>
                 </div>
                 <div class="start-right">
-                    <div class="menu-item" style="font-weight: bold;">My Documents</div>
-                    <div class="menu-item" style="font-weight: bold;">My Pictures</div>
-                    <hr style="border: 0; border-top: 1px solid #91b0df; margin: 5px 10px;">
-                    <div class="menu-item">Control Panel</div>
-                    <!-- WALLPAPER SETTING -->
-                    <div class="menu-item" onclick="triggerWallpaperUpload()" style="color: #003096;">🖼️ Change Wallpaper</div>
-                    <!-- ICON SETTING -->
-                    <div class="menu-item" onclick="openIconSelector()" style="color: #003096;">📁 Replace Icon</div>
+                    <div class="menu-item" style="font-weight: bold;">My Projects</div>
+                    <div class="menu-item" style="font-weight: bold;">My Resume</div>
+                    <hr style="border:0; border-top:1px solid #91b0df; margin: 5px 10px;">
+                    <!-- CONTROL PANEL -->
+                    <div class="menu-item" onclick="promptLogin()" style="font-weight: bold;">🛠️ Control Panel</div>
                     <div class="menu-item">Help and Support</div>
                 </div>
             </div>
             <div class="start-footer">
-                <button class="footer-btn">🔑 Log Off</button>
                 <button class="footer-btn">🔴 Turn Off</button>
+            </div>
+        </div>
+
+        <!-- LOGIN MODAL -->
+        <div id="loginModal">
+            <div class="window-header"><span>System Login</span><div class="win-controls"><div class="win-btn win-close" onclick="document.getElementById('loginModal').style.display='none'">X</div></div></div>
+            <div class="window-body">
+                <p style="font-size:12px">Please enter administrator password:</p>
+                <input type="password" id="passInput" style="width:100%; margin-bottom:10px;">
+                <button onclick="checkPass()" style="width:100%">Enter</button>
+            </div>
+        </div>
+
+        <!-- CMS / CONTROL PANEL WINDOW -->
+        <div class="window" id="control-panel" style="width: 400px; top: 100px; left: 150px;">
+            <div class="window-header">
+                <span>Bong OS - Control Panel</span>
+                <div class="win-controls"><div class="win-btn win-close" onclick="closeWindow('control-panel')">X</div></div>
+            </div>
+            <div class="window-body">
+                <h3 style="margin-top:0">System Administration</h3>
+                <div class="menu-item" onclick="triggerWallpaperUpload()" style="color:blue">🖼️ Change Global Wallpaper</div>
+                <div class="menu-item" onclick="alert('Icon Management coming soon...')" style="color:blue">📁 Manage Desktop Icons</div>
+                <hr>
+                <p style="font-size:11px">Project CMS (Beta): Select a project to edit metadata or video links.</p>
+                <select id="cmsSelect" style="width:100%"></select>
             </div>
         </div>
 
     </div>
 
-    <!-- ICON SELECTOR MODAL -->
-    <div id="iconSelectorModal">
-        <div class="modal-header">
-            <span>Bong OS - Icon Manager</span>
-            <span style="cursor:pointer" onclick="closeIconSelector()">X</span>
-        </div>
-        <div class="modal-body">
-            <p style="font-size: 12px; margin-top: 0;">Select project to modify:</p>
-            <select id="targetIconSelect">
-                <option value="icon-beilos">Beilos.exe</option>
-            </select>
-            <button onclick="triggerIconUpload()">Upload Image...</button>
-        </div>
-    </div>
-
     <!-- Hidden Inputs -->
     <input type="file" id="wallpaperInput" style="display: none;" accept="image/*">
-    <input type="file" id="iconInput" style="display: none;" accept="image/*">
 
     <div class="taskbar">
         <button class="start-btn" id="startBtn">start</button>
-        <div class="system-tray">
-            <span id="clock">12:00 PM</span>
-        </div>
+        <div class="system-tray"><span id="clock">12:00 PM</span></div>
     </div>
 
     <script>
+        const projects = [
+            { id: 'kddi', brand: 'KDDI Japan', title: 'Virtual Shibuya Halloween', icon: '🎃', desc: 'As Halloween approached, the widely enjoyed holiday in Japan couldn\'t be normally celebrated, not in COVID-stricken 2020. So, instead, the two brands, Shibuya and au, built, block-by-block, a virtual Shibuya City that would hold the largest ever Halloween gathering.', stats: '3x The Drum awards | Cannes Lions Shortlist | $20M Earned Media', video: '' },
+            { id: 'uber', brand: 'Uber Eats', title: 'Smart Spokes', icon: '🚲', desc: 'Teaming up with tech startup Eyes Japan, Ogilvy Tokyo launched a road safety campaign using UberEats delivery bicycles as the medium. Equipped with Gyrokinetic LEDs that turned each wheel into a digital screen.', stats: '2x D&AD Graphite Pencils | 2x The Drum Awards | Cannes Lions Shortlist', video: '' },
+            { id: 'apple-mom', brand: 'Apple x T-Mobile', title: 'Mom Knows', icon: '📱', desc: 'To launch the new iPhone 16 Pro, T-Mobile teamed up with Apple for a nationwide campaign starring SNL’s Marcello Hernandez and his real-life mom, Isabel.', stats: 'Nationwide Campaign | Starring Marcello Hernandez', video: '' },
+            { id: 'samsung-copa', brand: 'Samsung x T-Mobile', title: 'Copa America 2024', icon: '⚽', desc: 'For Copa América 2024, T-Mobile launched a national spot celebrating the gameday rituals fans swear by. Introducing the new Galaxy S24.', stats: 'National Spot | Partnership with Samsung Electronics', video: '' },
+            { id: 'apple-giver', brand: 'Apple x T-Mobile', title: 'The Big Giver', icon: '🎁', desc: 'New Product Introduction for the launch of the brand-new iPhone 16. Featuring Marcello Hernandez.', stats: 'Nationwide Launch | Holiday Feature Spot', video: '' },
+            { id: 'samsung-s25', brand: 'Samsung x T-Mobile', title: 'Galaxy S25 Launch', icon: '✨', desc: 'For the nationwide launch of the Samsung Galaxy S25, T-Mobile partnered with Samsung Electronics featuring global superstar Natti Natasha.', stats: 'NPI Campaign | Natti Natasha Feature', video: '' },
+            { id: 'kfc-air', brand: 'KFC', title: 'Love is in the AI.R', icon: '🍗', desc: 'For Valentine’s Day, we launched the first brand-led social activation using AI at scale in LATAM. Sanders transformed fan details into love letters.', stats: 'LATAM Region | AI Integration', video: '' },
+            { id: 'audi', brand: 'Audi', title: 'It Matters', icon: '🚗', desc: 'Hispanic market nationwide feature film development for the 2024 Audi SUV family.', stats: 'Nationwide | Feature Development', video: '' },
+            { id: 'kfc-fingers', brand: 'KFC', title: 'Fingers', icon: '🖐️', desc: 'LATAM + Caribbean region-wide. +42 markets. 3 languages (3 songs).', stats: 'Regional Campaign | 42+ Markets', video: '' },
+            { id: 'gerber', brand: 'Gerber', title: 'Decisiones', icon: '👶', desc: 'Hispanic market double feature film development for the ‘Gerber Experts’ platform nationwide.', stats: 'Hispanic Market | Nationwide', video: '' },
+            { id: 'subway', brand: 'Subway', title: 'Moving', icon: '🥪', desc: 'Nationwide launch of the BOGO Meal Deals. An offer so good, you’ll forget about everything else...', stats: 'Nationwide Launch | BOGO Campaign', video: '' },
+            { id: 'tmobile-nail', brand: 'T-Mobile', title: 'Nailed It', icon: '💅', desc: 'Carrier nationwide release for the new ‘5-Year plan Guarantee’', stats: 'Nationwide Release', video: '' },
+            { id: 'chubb', brand: 'Chubb Insurance', title: 'No piensas en Chubb', icon: '🛡️', desc: 'Regional Manifesto refresh across Latin America in over 25 countries.', stats: 'LATAM Regional | 25+ Countries', video: '' }
+        ];
+
+        // Initialize Desktop and Windows
+        const grid = document.getElementById('iconGrid');
+        const winContainer = document.getElementById('project-windows-container');
+        const cmsSelect = document.getElementById('cmsSelect');
+
+        projects.forEach((p, index) => {
+            // Create Icon
+            const icon = document.createElement('div');
+            icon.className = 'desktop-icon';
+            icon.onclick = () => openWindow(p.id);
+            icon.innerHTML = `<div class="icon-display">${p.icon}</div><div class="icon-label">${p.title}</div>`;
+            grid.appendChild(icon);
+
+            // Create Window
+            const win = document.createElement('div');
+            win.className = 'window';
+            win.id = p.id;
+            win.style.width = '500px';
+            win.style.top = (50 + (index * 10)) + 'px';
+            win.style.left = (120 + (index * 15)) + 'px';
+            win.innerHTML = `
+                <div class="window-header">
+                    <span>${p.brand} - ${p.title}</span>
+                    <div class="win-controls"><div class="win-btn win-close" onclick="closeWindow('${p.id}')">X</div></div>
+                </div>
+                <div class="window-body">
+                    <p class="project-brand">${p.brand}</p>
+                    <h1 class="project-title">${p.title}</h1>
+                    <div class="media-window" id="media-${p.id}">
+                        ${p.video ? `<iframe src="${p.video}"></iframe>` : `[ No Video Linked - Use Control Panel ]`}
+                    </div>
+                    <p class="project-desc">${p.desc}</p>
+                    <p class="project-stats">${p.stats}</p>
+                </div>
+            `;
+            winContainer.appendChild(win);
+
+            // Add to CMS Select
+            const opt = document.createElement('option');
+            opt.value = p.id;
+            opt.innerText = p.title;
+            cmsSelect.appendChild(opt);
+        });
+
+        // Basic OS Logic
+        function openWindow(id) {
+            const win = document.getElementById(id);
+            win.style.display = 'flex';
+            document.querySelectorAll('.window').forEach(w => w.style.zIndex = 100);
+            win.style.zIndex = 200;
+            document.getElementById('startMenu').style.display = 'none';
+        }
+
+        function closeWindow(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        function promptLogin() {
+            document.getElementById('startMenu').style.display = 'none';
+            document.getElementById('loginModal').style.display = 'block';
+        }
+
+        function checkPass() {
+            const input = document.getElementById('passInput').value;
+            if (input === 'bong420') {
+                document.getElementById('loginModal').style.display = 'none';
+                openWindow('control-panel');
+            } else {
+                alert('Access Denied: Incorrect Password');
+            }
+        }
+
+        // Draggable Windows
+        document.addEventListener('mousedown', (e) => {
+            const header = e.target.closest('.window-header');
+            if (!header) return;
+            const win = header.parentElement;
+            let isDragging = true;
+            let offset = { x: e.clientX - win.offsetLeft, y: e.clientY - win.offsetTop };
+            
+            win.style.zIndex = 300; // Bring to front
+
+            const move = (moveE) => {
+                if (!isDragging) return;
+                win.style.left = (moveE.clientX - offset.x) + 'px';
+                win.style.top = (moveE.clientY - offset.y) + 'px';
+            };
+
+            const stop = () => {
+                isDragging = false;
+                document.removeEventListener('mousemove', move);
+                document.removeEventListener('mouseup', stop);
+            };
+
+            document.addEventListener('mousemove', move);
+            document.addEventListener('mouseup', stop);
+        });
+
+        // Start Menu Toggle
         const startBtn = document.getElementById('startBtn');
         const startMenu = document.getElementById('startMenu');
-        const wallpaperInput = document.getElementById('wallpaperInput');
-        const iconInput = document.getElementById('iconInput');
-        const desktop = document.getElementById('desktop');
-        const iconModal = document.getElementById('iconSelectorModal');
-        const targetIconSelect = document.getElementById('targetIconSelect');
-
-        // Toggle Start Menu
         startBtn.onclick = (e) => {
             e.stopPropagation();
             startMenu.style.display = startMenu.style.display === 'flex' ? 'none' : 'flex';
         };
+        document.onclick = (e) => { if(!startMenu.contains(e.target) && e.target !== startBtn) startMenu.style.display = 'none'; };
 
-        // Close menu if clicking desktop
-        desktop.onclick = () => {
-            startMenu.style.display = 'none';
-            closeIconSelector();
-        };
-
-        // Wallpaper Upload Logic
-        function triggerWallpaperUpload() {
-            startMenu.style.display = 'none';
-            wallpaperInput.click();
-        }
-
-        wallpaperInput.onchange = (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    desktop.style.backgroundImage = `url('${event.target.result}')`;
-                };
-                reader.readAsDataURL(file);
-            }
-        };
-
-        // Icon Customization Logic
-        function openIconSelector() {
-            startMenu.style.display = 'none';
-            iconModal.style.display = 'block';
-        }
-
-        function closeIconSelector() {
-            iconModal.style.display = 'none';
-        }
-
-        function triggerIconUpload() {
-            iconInput.click();
-        }
-
-        iconInput.onchange = (e) => {
-            const file = e.target.files[0];
-            const targetId = targetIconSelect.value;
-            if (file && targetId) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const iconElement = document.getElementById(targetId).querySelector('.icon-display');
-                    // Remove text/emoji
-                    iconElement.innerText = '';
-                    // Set as background image
-                    iconElement.style.backgroundImage = `url('${event.target.result}')`;
-                    closeIconSelector();
-                };
-                reader.readAsDataURL(file);
-            }
-        };
-
-        // Clock Logic
+        // Clock
         function updateClock() {
             const now = new Date();
             document.getElementById('clock').innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         }
-        setInterval(updateClock, 1000);
-        updateClock();
+        setInterval(updateClock, 1000); updateClock();
+
+        // Wallpaper Logic
+        const wallpaperInput = document.getElementById('wallpaperInput');
+        function triggerWallpaperUpload() { wallpaperInput.click(); }
+        wallpaperInput.onchange = (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (ev) => document.getElementById('desktop').style.backgroundImage = `url('${ev.target.result}')`;
+                reader.readAsDataURL(file);
+            }
+        };
     </script>
 </body>
 </html>
