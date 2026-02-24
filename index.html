@@ -132,7 +132,7 @@
         /* --- DESKTOP ICONS --- */
         .icon-grid {
             position: absolute; 
-            top: 15px;
+            top: 20px;
             left: 10px;
             display: grid;
             grid-template-columns: repeat(auto-fill, var(--icon-spacing-x));
@@ -375,9 +375,19 @@
     <script>
         // --- DATA ---
         let projects = [
-            { id: 'kddi', brand: 'KDDI Japan', title: 'Virtual Shibuya Halloween', icon: '🎃', desc: 'As Halloween approached, the widely enjoyed holiday in Japan couldn\'t be normally celebrated... built, block-by-block, a virtual Shibuya City.', stats: '3x The Drum awards | Cannes Lions Shortlist | $20M Earned Media', video: '' },
-            { id: 'uber', brand: 'Uber Eats', title: 'Smart Spokes', icon: '🚲', desc: 'Uber Eats bikes were equipped with Gyrokinetic LEDs that turned each wheel into a digital screen displaying safety messages.', stats: '2x D&AD Graphite Pencils | Cannes Lions Shortlist', video: '' },
-            { id: 'apple-mom', brand: 'Apple x T-Mobile', title: 'Mom Knows', icon: '📱', desc: 'Nationwide campaign starring SNL’s Marcello Hernandez and his real-life mom, Isabel. Co-written with Marcello.', stats: 'Nationwide Launch | iPhone 16 Pro', video: '' }
+            { id: 'kddi', brand: 'KDDI Japan', title: 'Virtual Shibuya Halloween', icon: '🎃', desc: 'As Halloween approached, the widely enjoyed holiday in Japan couldn\'t be normally celebrated, not in COVID-stricken 2020. So, instead, the two brands, Shibuya and au, built, block-by-block, a virtual Shibuya City that would hold the largest ever Halloween gathering.', stats: '3x The Drum awards | Cannes Lions Shortlist | $20M Earned Media', video: '' },
+            { id: 'uber', brand: 'Uber Eats', title: 'Smart Spokes', icon: '🚲', desc: 'Teaming up with tech startup Eyes Japan, Ogilvy Tokyo launched a road safety campaign using UberEats delivery bicycles as the medium. Equipped with Gyrokinetic LEDs that turned each wheel into a digital screen displaying safety messages.', stats: '2x D&AD Graphite Pencils | Cannes Lions Shortlist', video: '' },
+            { id: 'apple-mom', brand: 'Apple x T-Mobile', title: 'Mom Knows', icon: '📱', desc: 'To launch the new iPhone 16 Pro, T-Mobile teamed up with Apple for a nationwide campaign starring SNL’s Marcello Hernandez and his real-life mom, Isabel. Co-written with Marcello Hernandez himself.', stats: 'Nationwide Launch | iPhone 16 Pro', video: '' },
+            { id: 'samsung-copa', brand: 'Samsung x T-Mobile', title: 'Copa America 2024', icon: '⚽', desc: 'For Copa América 2024, T-Mobile launched a national spot celebrating the gameday rituals fans swear by. Created in collaboration with Samsung, the film also introduced the new Galaxy S24 and S24 Plus.', stats: 'National Spot | Copa América 2024', video: '' },
+            { id: 'apple-giver', brand: 'Apple x T-Mobile', title: 'The Big Giver', icon: '🎁', desc: 'New Product Introduction for the launch of the brand-new iPhone 16. Featuring Marcello Hernandez. Carrier nationwide launch + feature holiday spot.', stats: 'iPhone 16 Launch | Holiday Spot', video: '' },
+            { id: 'samsung-s25', brand: 'Samsung x T-Mobile', title: 'Galaxy S25 Launch', icon: '✨', desc: 'For the nationwide launch of the Samsung Galaxy S25 and S25 Plus, T-Mobile partnered with Samsung Electronics on a New Product Introduction campaign featuring global superstar Natti Natasha.', stats: 'NPI Campaign | Natti Natasha Feature', video: '' },
+            { id: 'kfc-air', brand: 'KFC', title: 'Love is in the AI.R', icon: '🍗', desc: 'For Valentine’s Day, we launched the first brand-led social activation using AI at scale in LATAM. Sanders transformed fan details into love letters.', stats: 'LATAM Region | AI Integration', video: '' },
+            { id: 'audi', brand: 'Audi', title: 'It Matters', icon: '🚗', desc: 'Hispanic market nationwide feature film development for the 2024 Audi SUV family.', stats: 'Nationwide | SUV Feature', video: '' },
+            { id: 'kfc-fingers', brand: 'KFC', title: 'Fingers', icon: '🖐️', desc: 'LATAM + Caribbean region-wide. +42 markets. 3 languages (3 songs).', stats: 'Regional Campaign | 42+ Markets', video: '' },
+            { id: 'gerber', brand: 'Gerber', title: 'Decisiones', icon: '👶', desc: 'Hispanic market double feature film development for the ‘Gerber Experts’ platform nationwide.', stats: 'Hispanic Market | Nationwide', video: '' },
+            { id: 'subway', brand: 'Subway', title: 'Moving', icon: '🥪', desc: 'Nationwide launch of the BOGO Meal Deals. An offer so good, you’ll forget about everything else...', stats: 'Nationwide Launch | BOGO Campaign', video: '' },
+            { id: 'tmobile-nail', brand: 'T-Mobile', title: 'Nailed It', icon: '💅', desc: 'Carrier nationwide release for the new ‘5-Year plan Guarantee’', stats: 'Carrier Nationwide Release', video: '' },
+            { id: 'chubb', brand: 'Chubb Insurance', title: 'No piensas en Chubb', icon: '🛡️', desc: 'Regional Manifesto refresh across Latin America in over 25 countries.', stats: 'LATAM Regional | 25+ Countries', video: '' }
         ];
 
         const defaultIcons = ['🎃', '🚲', '📱', '⚽', '🎁', '✨', '🍗', '🚗', '🖐️', '👶', '🥪', '💅', '🛡️', '⚙️', '📂', '📄'];
@@ -486,7 +496,7 @@
             projects.forEach(p => {
                 const item = document.createElement('div');
                 item.className = 'cms-list-item';
-                item.innerText = `${p.brand} ${p.title}`;
+                item.innerText = `${p.brand} - ${p.title}`;
                 item.onclick = () => renderCMSEdit(p.id);
                 list.appendChild(item);
             });
@@ -494,7 +504,7 @@
 
         function renderCMSEdit(id = null) {
             const main = document.getElementById('cms-main');
-            const p = id ? projects.find(proj => proj.id === id) : { id: '', brand: '', title: '', desc: '', video: '', icon: '⚙️' };
+            const p = id ? projects.find(proj => proj.id === id) : { id: '', brand: '', title: '', desc: '', video: '', icon: '⚙️', stats: '' };
             
             main.innerHTML = `
                 <h3 style="margin-top:0">${id ? 'Edit Properties' : 'New Project'}</h3>
@@ -505,6 +515,10 @@
                 <div class="form-group">
                     <label>Client / Brand:</label>
                     <input type="text" id="edit-brand" value="${p.brand}">
+                </div>
+                <div class="form-group">
+                    <label>Stats / Awards:</label>
+                    <input type="text" id="edit-stats" value="${p.stats}">
                 </div>
                 <div class="form-group">
                     <label>Description:</label>
@@ -542,15 +556,16 @@
         function saveProject(id) {
             const title = document.getElementById('edit-title').value;
             const brand = document.getElementById('edit-brand').value;
+            const stats = document.getElementById('edit-stats').value;
             const desc = document.getElementById('edit-desc').value;
             const video = document.getElementById('edit-video').value;
             const icon = document.querySelector('.icon-opt.selected')?.innerText || '⚙️';
             
-            if (id && id !== 'null') {
+            if (id && id !== '' && id !== 'null') {
                 const p = projects.find(proj => proj.id === id);
-                Object.assign(p, { title, brand, desc, video, icon });
+                Object.assign(p, { title, brand, stats, desc, video, icon });
             } else {
-                projects.push({ id: Date.now().toString(), title, brand, desc, video, icon });
+                projects.push({ id: 'p-' + Date.now().toString(), title, brand, stats, desc, video, icon });
             }
             updateDesktop();
         }
@@ -571,6 +586,7 @@
             if (document.getElementById('passInput').value === 'bong420') {
                 document.getElementById('loginModal').style.display = 'none';
                 openWindow('control-panel');
+                renderCMSList();
             } else { alert('Access Denied'); }
         }
 
