@@ -13,7 +13,7 @@
             --window-bg: #ece9d8;
             /* Authentic XP Desktop Icon Dimensions */
             --icon-size: 48px;
-            --icon-spacing-x: 75px;
+            --icon-spacing-x: 80px;
             --icon-spacing-y: 100px;
         }
 
@@ -26,11 +26,11 @@
             background-color: #000;
         }
 
-        /* The Desktop Background */
+        /* The Desktop Background - Updated to .webp with leading space */
         .desktop {
             height: calc(100vh - var(--taskbar-height)); 
             width: 100vw;
-            background: url('%20-11.jpg') no-repeat center center;
+            background: url('%20-11.webp') no-repeat center center;
             background-size: cover;
             background-color: #0078d7;
             position: relative;
@@ -132,14 +132,14 @@
         /* --- DESKTOP ICONS --- */
         .icon-grid {
             position: absolute; 
-            top: 25px; /* Increased padding to prevent top overlap */
-            left: 15px;
+            top: 45px; /* Significant padding to prevent top overlap */
+            left: 20px;
             display: grid;
             grid-template-columns: repeat(auto-fill, var(--icon-spacing-x));
             grid-template-rows: repeat(auto-fill, var(--icon-spacing-y));
             grid-auto-flow: column;
-            gap: 10px;
-            height: calc(100% - 40px);
+            gap: 15px;
+            height: calc(100% - 70px);
         }
 
         .desktop-icon { 
@@ -166,7 +166,7 @@
             background-size: contain; 
             background-position: center; 
             background-repeat: no-repeat;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
             filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.3));
         }
 
@@ -179,7 +179,6 @@
             max-width: 100%; 
             word-wrap: break-word;
             line-height: 1.2;
-            /* Classic dotted border focus would go here if active */
         }
 
         /* --- WINDOWS --- */
@@ -386,7 +385,7 @@
             win.className = 'window';
             win.id = p.id;
             win.style.width = '500px';
-            win.style.top = (50 + (index * 15)) + 'px';
+            win.style.top = (60 + (index * 15)) + 'px';
             win.style.left = (120 + (index * 20)) + 'px';
             win.innerHTML = `
                 <div class="window-header">
