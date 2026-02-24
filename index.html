@@ -2,77 +2,319 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Beilos OS | Glass Desktop</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beilos OS | Desktop</title>
     <style>
-        /* This section is the "Design" (CSS) */
-        body {
-            background: linear-gradient(135deg, #0078d7 0%, #27c4f5 100%);
-            height: 100vh;
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, sans-serif;
-            overflow: hidden; /* Keeps the "Desktop" from scrolling */
+        /* CSS Variables for easy color management */
+        :root {
+            --xp-blue: #245edb;
+            --xp-green: #3c913c;
+            --taskbar-height: 40px;
         }
 
-        /* The Taskbar at the bottom */
+        * {
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body, html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Tahoma', 'Segoe UI', sans-serif;
+            overflow: hidden;
+        }
+
+        /* The Background - Using the Tree with Stars aesthetic */
+        .desktop {
+            height: 100vh;
+            width: 100vw;
+            background: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=2070') no-repeat center center fixed;
+            background-size: cover;
+            /* We simulate the specific star-tree look with a secondary overlay if needed, 
+               but for now, we'll focus on the desktop functionality */
+            background-image: url('https://i.pinimg.com/originals/9e/c1/93/9ec1932145373a46a6f1127e436f562e.jpg'); /* Fallback attempt at a similar vibe */
+            position: relative;
+        }
+
+        /* Desktop Icons Container */
+        .icon-grid {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: grid;
+            grid-template-columns: repeat(1, 80px);
+            grid-gap: 25px;
+        }
+
+        .desktop-icon {
+            width: 75px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .desktop-icon:hover .icon-img {
+            filter: brightness(1.2);
+        }
+
+        .icon-img {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 5px;
+            filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.5));
+        }
+
+        .icon-label {
+            color: white;
+            font-size: 11px;
+            text-shadow: 1px 1px 2px black;
+            padding: 2px;
+        }
+
+        /* Windows XP Style Taskbar */
         .taskbar {
             position: fixed;
             bottom: 0;
+            left: 0;
             width: 100%;
-            height: 45px;
-            background: rgba(255, 255, 255, 0.2); /* The "Glass" effect */
-            backdrop-filter: blur(10px); /* Makes it blurry like Aero */
-            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            height: var(--taskbar-height);
+            background: linear-gradient(to bottom, #245edb 0%, #3f8cf3 9%, #245edb 18%, #245edb 92%, #1941a5 100%);
             display: flex;
             align-items: center;
-            z-index: 1000;
+            z-index: 9999;
+            border-top: 1px solid #003096;
         }
 
-        /* The Start Button */
-        .start-button {
+        .start-btn {
+            height: 100%;
             background: linear-gradient(to bottom, #3dbd3d 0%, #218521 100%);
+            padding: 0 20px 0 10px;
+            display: flex;
+            align-items: center;
             color: white;
-            padding: 5px 20px;
-            border-radius: 0 15px 15px 0; /* Rounded like the XP button */
             font-weight: bold;
             font-style: italic;
+            font-size: 16px;
+            border-radius: 0 10px 10px 0;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.3);
             cursor: pointer;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.2);
-            border: 1px solid #1a631a;
-            margin-right: 15px;
+            border: none;
+            border-right: 1px solid #1a631a;
         }
 
-        .start-button:hover {
+        .start-btn:hover {
             filter: brightness(1.1);
         }
 
-        /* The Clock in the corner */
+        .taskbar-items {
+            display: flex;
+            margin-left: 10px;
+            gap: 5px;
+        }
+
+        .taskbar-item {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 12px;
+            padding: 5px 15px;
+            border-radius: 3px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            max-width: 150px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
         .system-tray {
             margin-left: auto;
-            padding-right: 15px;
+            background: linear-gradient(to bottom, #0997ff 0%, #0053ee 100%);
+            height: 100%;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
             color: white;
-            font-size: 14px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            font-size: 12px;
+            border-left: 1px solid #0840b3;
         }
+
+        /* The Windows */
+        .window {
+            position: absolute;
+            top: 100px;
+            left: 200px;
+            width: 450px;
+            background: #ece9d8; /* Classic XP window color */
+            border: 3px solid #0058e6;
+            border-radius: 8px 8px 0 0;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.4);
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            z-index: 100;
+        }
+
+        .window-header {
+            background: linear-gradient(to bottom, #0058e6 0%, #003db3 100%);
+            padding: 5px 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            font-size: 13px;
+            cursor: move;
+        }
+
+        .window-controls {
+            display: flex;
+            gap: 2px;
+        }
+
+        .win-btn {
+            width: 22px;
+            height: 22px;
+            border: 1px solid white;
+            border-radius: 3px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 10px;
+            cursor: pointer;
+        }
+
+        .win-close { background: #e81123; }
+        .win-min { background: #3c913c; }
+
+        .window-body {
+            padding: 20px;
+            min-height: 200px;
+            background: white;
+            margin: 2px;
+            border: 1px solid #919b9c;
+        }
+
+        /* Specific Icons Styling */
+        .icon-beilos { color: #fff; }
     </style>
 </head>
 <body>
 
-    <div class="taskbar">
-        <div class="start-button" onclick="alert('Beilos OS: System Initialized')">START</div>
-        <div style="color: white; opacity: 0.8;">| &nbsp; Project: Glass Desktop</div>
+    <div class="desktop" id="desktop">
         
-        <div class="system-tray" id="clock">12:00 PM</div>
+        <!-- Desktop Icons -->
+        <div class="icon-grid">
+            <div class="desktop-icon" onclick="openWindow('beilosWindow')">
+                <div class="icon-img">☕</div>
+                <div class="icon-label">Beilos.exe</div>
+            </div>
+            <div class="desktop-icon" onclick="openWindow('agentWindow')">
+                <div class="icon-img">🤖</div>
+                <div class="icon-label">AI Agent</div>
+            </div>
+            <div class="desktop-icon" onclick="openWindow('myComputer')">
+                <div class="icon-img">💻</div>
+                <div class="icon-label">My Computer</div>
+            </div>
+        </div>
+
+        <!-- Beilos App Window -->
+        <div class="window" id="beilosWindow">
+            <div class="window-header">
+                <span>Beilos Coffee - Shop Manager</span>
+                <div class="window-controls">
+                    <div class="win-btn win-min">_</div>
+                    <div class="win-btn win-close" onclick="closeWindow('beilosWindow')">X</div>
+                </div>
+            </div>
+            <div class="window-body">
+                <h3>☕ Beilos Shop Status</h3>
+                <p>Welcome to the Beilos Coffee interface. Once your Raspberry Pi is connected, you can track orders and agent performance here.</p>
+                <hr>
+                <p><strong>System Message:</strong> Waiting for hardware handshake...</p>
+            </div>
+        </div>
+
+        <!-- AI Agent Window -->
+        <div class="window" id="agentWindow">
+            <div class="window-header">
+                <span>Agent Terminal - OpenClaw v1.0</span>
+                <div class="window-controls">
+                    <div class="win-btn win-min">_</div>
+                    <div class="win-btn win-close" onclick="closeWindow('agentWindow')">X</div>
+                </div>
+            </div>
+            <div class="window-body" style="background: #000; color: #0f0; font-family: monospace;">
+                <p>> System boot initiated...</p>
+                <p>> Loading design trends...</p>
+                <p>> Awaiting input from Raspberry Pi...</p>
+                <p>> _</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- The Taskbar -->
+    <div class="taskbar">
+        <button class="start-btn" onclick="toggleStartMenu()">start</button>
+        <div class="taskbar-items" id="taskbar-items">
+            <!-- Active apps will show here -->
+        </div>
+        <div class="system-tray">
+            <span id="clock">12:00 PM</span>
+        </div>
     </div>
 
     <script>
-        /* A tiny bit of "Logic" (JavaScript) to make the clock real */
+        // Open/Close Window Logic
+        function openWindow(id) {
+            const win = document.getElementById(id);
+            win.style.display = 'flex';
+            // Simple logic to bring clicked window to front
+            document.querySelectorAll('.window').forEach(w => w.style.zIndex = 100);
+            win.style.zIndex = 200;
+        }
+
+        function closeWindow(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        function toggleStartMenu() {
+            // Placeholder for Start Menu logic
+            console.log("Start menu clicked");
+        }
+
+        // Clock Logic
         function updateClock() {
             const now = new Date();
-            document.getElementById('clock').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('clock').innerText = timeStr;
         }
         setInterval(updateClock, 1000);
         updateClock();
-    </script>
 
+        // Make windows draggable (Simple version)
+        document.querySelectorAll('.window-header').forEach(header => {
+            let isDragging = false;
+            let offset = { x: 0, y: 0 };
+            const win = header.parentElement;
+
+            header.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                offset.x = e.clientX - win.offsetLeft;
+                offset.y = e.clientY - win.offsetTop;
+                win.style.zIndex = 201;
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                win.style.left = (e.clientX - offset.x) + 'px';
+                win.style.top = (e.clientY - offset.y) + 'px';
+            });
+
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+            });
+        });
+    </script>
 </body>
 </html>
