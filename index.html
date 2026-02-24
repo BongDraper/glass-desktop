@@ -11,6 +11,10 @@
             --taskbar-height: 40px;
             --start-width: 380px;
             --window-bg: #ece9d8;
+            /* Authentic XP Desktop Icon Dimensions */
+            --icon-size: 48px;
+            --icon-spacing-x: 75px;
+            --icon-spacing-y: 100px;
         }
 
         * { box-sizing: border-box; user-select: none; }
@@ -127,31 +131,55 @@
 
         /* --- DESKTOP ICONS --- */
         .icon-grid {
-            position: absolute; top: 10px; left: 10px;
+            position: absolute; 
+            top: 25px; /* Increased padding to prevent top overlap */
+            left: 15px;
             display: grid;
-            grid-template-columns: repeat(auto-fill, 85px);
-            grid-template-rows: repeat(auto-fill, 90px);
+            grid-template-columns: repeat(auto-fill, var(--icon-spacing-x));
+            grid-template-rows: repeat(auto-fill, var(--icon-spacing-y));
             grid-auto-flow: column;
-            gap: 15px;
-            height: 80vh;
+            gap: 10px;
+            height: calc(100% - 40px);
         }
 
         .desktop-icon { 
-            width: 80px; text-align: center; cursor: pointer; 
-            display: flex; flex-direction: column; align-items: center;
+            width: var(--icon-spacing-x); 
+            text-align: center; 
+            cursor: pointer; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center;
+            padding: 5px;
+        }
+
+        .desktop-icon:hover .icon-label {
+            background-color: #0a5fcf;
         }
         
         .icon-display {
-            width: 42px; height: 42px; font-size: 30px;
-            display: flex; align-items: center; justify-content: center;
-            background-size: contain; background-position: center; background-repeat: no-repeat;
+            width: var(--icon-size); 
+            height: var(--icon-size); 
+            font-size: 32px;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            background-size: contain; 
+            background-position: center; 
+            background-repeat: no-repeat;
             margin-bottom: 4px;
+            filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.3));
         }
 
         .icon-label {
-            color: white; font-size: 10px; text-shadow: 1px 1px 2px black;
-            padding: 2px; background: rgba(0,0,0,0.2); border-radius: 2px;
-            max-width: 75px; word-wrap: break-word;
+            color: white; 
+            font-size: 11px; 
+            text-shadow: 1px 1px 1px black;
+            padding: 2px 4px; 
+            border-radius: 2px;
+            max-width: 100%; 
+            word-wrap: break-word;
+            line-height: 1.2;
+            /* Classic dotted border focus would go here if active */
         }
 
         /* --- WINDOWS --- */
@@ -358,8 +386,8 @@
             win.className = 'window';
             win.id = p.id;
             win.style.width = '500px';
-            win.style.top = (50 + (index * 10)) + 'px';
-            win.style.left = (120 + (index * 15)) + 'px';
+            win.style.top = (50 + (index * 15)) + 'px';
+            win.style.left = (120 + (index * 20)) + 'px';
             win.innerHTML = `
                 <div class="window-header">
                     <span>${p.brand} - ${p.title}</span>
