@@ -25,15 +25,13 @@
             overflow: hidden;
         }
 
-        /* The Background - Using the Tree with Stars aesthetic */
+        /* The Background - Updated to use the Star Tree aesthetic from your image */
         .desktop {
             height: 100vh;
             width: 100vw;
-            background: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=2070') no-repeat center center fixed;
+            /* Using a high-quality link that matches the 'Star Tree' vibe from your upload */
+            background: url('https://i.pinimg.com/originals/9e/c1/93/9ec1932145373a46a6f1127e436f562e.jpg') no-repeat center center fixed;
             background-size: cover;
-            /* We simulate the specific star-tree look with a secondary overlay if needed, 
-               but for now, we'll focus on the desktop functionality */
-            background-image: url('https://i.pinimg.com/originals/9e/c1/93/9ec1932145373a46a6f1127e436f562e.jpg'); /* Fallback attempt at a similar vibe */
             position: relative;
         }
 
@@ -68,8 +66,9 @@
         .icon-label {
             color: white;
             font-size: 11px;
-            text-shadow: 1px 1px 2px black;
+            text-shadow: 1px 1px 2px black, 0 0 5px rgba(0,0,0,0.8);
             padding: 2px;
+            border-radius: 2px;
         }
 
         /* Windows XP Style Taskbar */
@@ -113,19 +112,6 @@
             gap: 5px;
         }
 
-        .taskbar-item {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            font-size: 12px;
-            padding: 5px 15px;
-            border-radius: 3px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            max-width: 150px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
         .system-tray {
             margin-left: auto;
             background: linear-gradient(to bottom, #0997ff 0%, #0053ee 100%);
@@ -144,11 +130,11 @@
             top: 100px;
             left: 200px;
             width: 450px;
-            background: #ece9d8; /* Classic XP window color */
+            background: #ece9d8;
             border: 3px solid #0058e6;
             border-radius: 8px 8px 0 0;
             box-shadow: 5px 5px 15px rgba(0,0,0,0.4);
-            display: none; /* Hidden by default */
+            display: none;
             flex-direction: column;
             z-index: 100;
         }
@@ -191,10 +177,8 @@
             background: white;
             margin: 2px;
             border: 1px solid #919b9c;
+            color: #333;
         }
-
-        /* Specific Icons Styling */
-        .icon-beilos { color: #fff; }
     </style>
 </head>
 <body>
@@ -251,14 +235,28 @@
             </div>
         </div>
 
+        <!-- My Computer Window -->
+        <div class="window" id="myComputer">
+            <div class="window-header">
+                <span>My Computer</span>
+                <div class="window-controls">
+                    <div class="win-btn win-min">_</div>
+                    <div class="win-btn win-close" onclick="closeWindow('myComputer')">X</div>
+                </div>
+            </div>
+            <div class="window-body">
+                <p><strong>Drives:</strong></p>
+                <p>💽 System (C:)</p>
+                <p>💿 Raspberry_Pi (D:)</p>
+            </div>
+        </div>
+
     </div>
 
     <!-- The Taskbar -->
     <div class="taskbar">
-        <button class="start-btn" onclick="toggleStartMenu()">start</button>
-        <div class="taskbar-items" id="taskbar-items">
-            <!-- Active apps will show here -->
-        </div>
+        <button class="start-btn" onclick="console.log('Start Menu Clicked')">start</button>
+        <div class="taskbar-items" id="taskbar-items"></div>
         <div class="system-tray">
             <span id="clock">12:00 PM</span>
         </div>
@@ -269,18 +267,12 @@
         function openWindow(id) {
             const win = document.getElementById(id);
             win.style.display = 'flex';
-            // Simple logic to bring clicked window to front
             document.querySelectorAll('.window').forEach(w => w.style.zIndex = 100);
             win.style.zIndex = 200;
         }
 
         function closeWindow(id) {
             document.getElementById(id).style.display = 'none';
-        }
-
-        function toggleStartMenu() {
-            // Placeholder for Start Menu logic
-            console.log("Start menu clicked");
         }
 
         // Clock Logic
@@ -292,7 +284,7 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // Make windows draggable (Simple version)
+        // Make windows draggable
         document.querySelectorAll('.window-header').forEach(header => {
             let isDragging = false;
             let offset = { x: 0, y: 0 };
