@@ -265,6 +265,13 @@
             z-index: 20000; display: none; width: 300px; padding: 2px;
         }
 
+        /* Status Toast */
+        #status-toast {
+            position: fixed; bottom: 50px; right: 20px; background: rgba(0,0,0,0.8);
+            color: white; padding: 10px 20px; border-radius: 5px; z-index: 100000;
+            font-size: 12px; display: none;
+        }
+
     </style>
 </head>
 <body>
@@ -305,15 +312,14 @@
             </div>
             <div class="start-columns">
                 <div class="start-left" id="startLeft">
-                    <!-- Standard links plus dynamic apps -->
                     <div class="menu-item" onclick="openWindow('win-paint')">🎨 Paint</div>
-                    <div class="menu-item">📝 Notepad</div>
+                    <div class="menu-item" onclick="showStatus('Notepad coming soon...')">📝 Notepad</div>
                 </div>
                 <div class="start-right">
                     <div class="menu-item" style="font-weight:bold">My Projects</div>
                     <hr style="border:0; border-top:1px solid #91b0df; margin: 5px 10px;">
                     <div class="menu-item" onclick="promptLogin()">🛠️ Control Panel</div>
-                    <div class="menu-item">Help and Support</div>
+                    <div class="menu-item" onclick="showStatus('Help center offline.')">Help and Support</div>
                 </div>
             </div>
             <div class="start-footer">
@@ -337,7 +343,7 @@
                         </div>
                         <div class="cp-box">
                             <div class="cp-box-title">See Also</div>
-                            <div class="cp-link">Windows Update</div>
+                            <div class="cp-link" onclick="showStatus('System is up to date.')">Windows Update</div>
                         </div>
                     </div>
                     <div class="cp-main" id="cms-main"></div>
@@ -357,6 +363,8 @@
 
     </div>
 
+    <div id="status-toast">Saving...</div>
+
     <input type="file" id="wallpaperInput" style="display:none" accept="image/*">
     <input type="file" id="projectIconInput" style="display:none" accept="image/*">
 
@@ -365,37 +373,104 @@
         <div class="system-tray"><span id="clock">12:00 PM</span></div>
     </div>
 
-    <script>
-        // --- DATA ---
-        let projects = [
-            { id: 'about-me', brand: 'Writer + ACD', title: 'About Me', icon: '👤', desc: "Found my calling as a writer through some truly cringey Tumblr blogs about music and culture. Since then I've led teams and campaigns from first concept to award wins. I care deeply about the work. The opposite of nonchalant.", stats: 'Maximiliano Gaudelli', video: '' },
-            { id: 'kddi', brand: 'KDDI Japan', title: 'Virtual Shibuya Halloween', icon: '🎃', desc: 'As Halloween approached, the widely enjoyed holiday in Japan couldn\'t be normally celebrated, not in COVID-stricken 2020. So, instead, the two brands, Shibuya and au, built, block-by-block, a virtual Shibuya City that would hold the largest ever Halloween gathering.', stats: '3x The Drum awards | Cannes Lions Shortlist | $20M Earned Media', video: '' },
-            { id: 'uber', brand: 'Uber Eats', title: 'Smart Spokes', icon: '🚲', desc: 'Teaming up with tech startup Eyes Japan, Ogilvy Tokyo launched a road safety campaign using UberEats delivery bicycles as the medium. Equipped with Gyrokinetic LEDs that turned each wheel into a digital screen displaying safety messages.', stats: '2x D&AD Graphite Pencils | Cannes Lions Shortlist', video: '' },
-            { id: 'apple-mom', brand: 'Apple x T-Mobile', title: 'Mom Knows', icon: '📱', desc: 'To launch the new iPhone 16 Pro, T-Mobile teamed up with Apple for a nationwide campaign starring SNL’s Marcello Hernandez and his real-life mom, Isabel. Co-written with Marcello Hernandez himself.', stats: 'Nationwide Launch | iPhone 16 Pro', video: '' },
-            { id: 'samsung-copa', brand: 'Samsung x T-Mobile', title: 'Copa America 2024', icon: '⚽', desc: 'For Copa América 2024, T-Mobile launched a national spot celebrating the gameday rituals fans swear by. Created in collaboration with Samsung, the film also introduced the new Galaxy S24 and S24 Plus.', stats: 'National Spot | Copa América 2024', video: '' },
-            { id: 'apple-giver', brand: 'Apple x T-Mobile', title: 'The Big Giver', icon: '🎁', desc: 'New Product Introduction for the launch of the brand-new iPhone 16. Featuring Marcello Hernandez. Carrier nationwide launch + feature holiday spot.', stats: 'iPhone 16 Launch | Holiday Spot', video: '' },
-            { id: 'samsung-s25', brand: 'Samsung x T-Mobile', title: 'Galaxy S25 Launch', icon: '✨', desc: 'For the nationwide launch of the Samsung Galaxy S25 and S25 Plus, T-Mobile partnered with Samsung Electronics on a New Product Introduction campaign featuring global superstar Natti Natasha.', stats: 'NPI Campaign | Natti Natasha Feature', video: '' },
-            { id: 'kfc-air', brand: 'KFC', title: 'Love is in the AI.R', icon: '🍗', desc: 'For Valentine’s Day, we launched the first brand-led social activation using AI at scale in LATAM. Sanders transformed fan details into love letters.', stats: 'LATAM Region | AI Integration', video: '' },
-            { id: 'audi', brand: 'Audi', title: 'It Matters', icon: '🚗', desc: 'Hispanic market nationwide feature film development for the 2024 Audi SUV family.', stats: 'Nationwide | SUV Feature', video: '' },
-            { id: 'kfc-fingers', brand: 'KFC', title: 'Fingers', icon: '🖐️', desc: 'LATAM + Caribbean region-wide. +42 markets. 3 languages (3 songs).', stats: 'Regional Campaign | 42+ Markets', video: '' },
-            { id: 'gerber', brand: 'Gerber', title: 'Decisiones', icon: '👶', desc: 'Hispanic market double feature film development for the ‘Gerber Experts’ platform nationwide.', stats: 'Hispanic Market | Nationwide', video: '' },
-            { id: 'subway', brand: 'Subway', title: 'Moving', icon: '🥪', desc: 'Nationwide launch of the BOGO Meal Deals. An offer so good, you’ll forget about everything else...', stats: 'Nationwide Launch | BOGO Campaign', video: '' },
-            { id: 'tmobile-nail', brand: 'T-Mobile', title: 'Nailed It', icon: '💅', desc: 'Carrier nationwide release for the new ‘5-Year plan Guarantee’', stats: 'Carrier Nationwide Release', video: '' },
-            { id: 'chubb', brand: 'Chubb Insurance', title: 'No piensas en Chubb', icon: '🛡️', desc: 'Regional Manifesto refresh across Latin America in over 25 countries.', stats: 'LATAM Regional | 25+ Countries', video: '' }
-        ];
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global state and firebase config
+        const firebaseConfig = JSON.parse(__firebase_config);
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+        let projects = [];
+        let user = null;
+
+        // UI Helpers
+        window.showStatus = (msg) => {
+            const toast = document.getElementById('status-toast');
+            toast.innerText = msg;
+            toast.style.display = 'block';
+            setTimeout(() => toast.style.display = 'none', 3000);
+        };
+
+        // --- AUTH ---
+        const initAuth = async () => {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (error) {
+                console.error("Auth error:", error);
+                showStatus("Error authenticating system.");
+            }
+        };
+
+        onAuthStateChanged(auth, (u) => {
+            user = u;
+            if (user) {
+                setupListeners();
+            }
+        });
+
+        // --- FIRESTORE LISTENERS ---
+        const setupListeners = () => {
+            // Listen to Projects
+            const projectsCol = collection(db, 'artifacts', appId, 'public', 'data', 'projects');
+            onSnapshot(projectsCol, (snapshot) => {
+                projects = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                // Default data if empty (first time run)
+                if (projects.length === 0) {
+                    seedDefaultData();
+                } else {
+                    updateDesktop();
+                }
+            }, (error) => {
+                console.error("Projects listener error:", error);
+            });
+
+            // Listen to Settings (Wallpaper)
+            const settingsDoc = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'appearance');
+            onSnapshot(settingsDoc, (snapshot) => {
+                if (snapshot.exists()) {
+                    const data = snapshot.data();
+                    if (data.wallpaper) {
+                        document.getElementById('desktop').style.backgroundImage = `url(${data.wallpaper})`;
+                    }
+                }
+            });
+        };
+
+        const seedDefaultData = async () => {
+            showStatus("Initializing default system data...");
+            const defaultProjects = [
+                { brand: 'Writer + ACD', title: 'About Me', icon: '👤', desc: "Found my calling as a writer through some truly cringey Tumblr blogs about music and culture.", stats: 'Maximiliano Gaudelli', video: '' },
+                { brand: 'KDDI Japan', title: 'Virtual Shibuya Halloween', icon: '🎃', desc: 'As Halloween approached... built a virtual Shibuya City.', stats: '3x The Drum awards | $20M Earned Media', video: '' },
+                { brand: 'Uber Eats', title: 'Smart Spokes', icon: '🚲', desc: 'Uber Eats bikes equipped with Gyrokinetic LEDs.', stats: '2x D&AD Graphite Pencils', video: '' }
+            ];
+
+            for (let p of defaultProjects) {
+                const id = p.title.toLowerCase().replace(/\s+/g, '-');
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'projects', id), p);
+            }
+        };
 
         // --- CORE UI LOGIC ---
-        function updateDesktop() {
+        window.updateDesktop = () => {
             const grid = document.getElementById('iconGrid');
             grid.innerHTML = '';
             
             // System Apps First
-            grid.innerHTML += `
-                <div class="desktop-icon" onclick="openWindow('win-paint')">
-                    <div class="icon-display">🎨</div>
-                    <div class="icon-label">Paint</div>
-                </div>
-            `;
+            const paintIcon = document.createElement('div');
+            paintIcon.className = 'desktop-icon';
+            paintIcon.onclick = () => openWindow('win-paint');
+            paintIcon.innerHTML = `<div class="icon-display">🎨</div><div class="icon-label">Paint</div>`;
+            grid.appendChild(paintIcon);
 
             // Dynamic Projects
             projects.forEach(p => {
@@ -404,23 +479,24 @@
                 icon.onclick = () => openProjectWindow(p.id);
                 const iconStyle = p.customIcon ? `background-image:url(${p.customIcon})` : '';
                 icon.innerHTML = `
-                    <div class="icon-display" style="${iconStyle}">${p.customIcon ? '' : p.icon}</div>
+                    <div class="icon-display" style="${iconStyle}">${p.customIcon ? '' : (p.icon || '📂')}</div>
                     <div class="icon-label">${p.title}</div>
                 `;
                 grid.appendChild(icon);
             });
             
             if (document.getElementById('control-panel').style.display === 'flex') renderCMSList();
-        }
+        };
 
-        function openProjectWindow(id) {
+        window.openProjectWindow = (id) => {
             const p = projects.find(proj => proj.id === id);
             if (!p) return;
             
-            let win = document.getElementById(`win-${id}`);
+            let winId = `win-${id}`;
+            let win = document.getElementById(winId);
             if (!win) {
                 win = document.createElement('div');
-                win.id = `win-${id}`;
+                win.id = winId;
                 win.className = 'window';
                 win.style.width = '600px';
                 win.style.top = '100px';
@@ -431,10 +507,10 @@
             let videoHtml = `<div class="media-container" style="display:flex; align-items:center; justify-content:center; color:#999; font-size:12px">No Media Linked</div>`;
             if (p.video) {
                 if (p.video.includes('youtube.com') || p.video.includes('youtu.be')) {
-                    const vidId = p.video.split('v=')[1] || p.video.split('/').pop();
+                    const vidId = p.video.split('v=')[1] || p.video.split('/').pop().split('?')[0];
                     videoHtml = `<div class="media-container"><iframe src="https://www.youtube.com/embed/${vidId}"></iframe></div>`;
                 } else if (p.video.includes('vimeo.com')) {
-                    const vidId = p.video.split('/').pop();
+                    const vidId = p.video.split('/').pop().split('?')[0];
                     videoHtml = `<div class="media-container"><iframe src="https://player.vimeo.com/video/${vidId}"></iframe></div>`;
                 } else {
                     videoHtml = `<div class="media-container"><video src="${p.video}" controls style="width:100%; height:100%"></video></div>`;
@@ -444,7 +520,7 @@
             win.innerHTML = `
                 <div class="window-header">
                     <span>${p.brand} - ${p.title}</span>
-                    <div class="win-controls"><div class="win-btn win-close" onclick="closeWindow('win-${id}')">X</div></div>
+                    <div class="win-controls"><div class="win-btn win-close" onclick="closeWindow('${winId}')">X</div></div>
                 </div>
                 <div class="window-body">
                     <div class="project-content">
@@ -458,18 +534,18 @@
             `;
             
             win.style.display = 'flex';
-            focusWindow(win.id);
-        }
+            focusWindow(winId);
+        };
 
-        function closeWindow(id) { document.getElementById(id).style.display = 'none'; }
-        function openWindow(id) { document.getElementById(id).style.display = 'flex'; focusWindow(id); }
-        function focusWindow(id) {
+        window.closeWindow = (id) => { document.getElementById(id).style.display = 'none'; };
+        window.openWindow = (id) => { document.getElementById(id).style.display = 'flex'; focusWindow(id); };
+        window.focusWindow = (id) => {
             document.querySelectorAll('.window').forEach(w => w.style.zIndex = 100);
             document.getElementById(id).style.zIndex = 200;
-        }
+        };
 
         // --- CMS LOGIC ---
-        function renderCMSList() {
+        window.renderCMSList = () => {
             const main = document.getElementById('cms-main');
             main.innerHTML = `
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px">
@@ -484,20 +560,19 @@
             `;
             
             const list = document.getElementById('cms-list');
-            projects.forEach(p => {
+            projects.sort((a,b) => a.title.localeCompare(b.title)).forEach(p => {
                 const item = document.createElement('div');
                 item.className = 'cms-list-item';
                 item.innerText = `${p.brand} - ${p.title}`;
                 item.onclick = () => renderCMSEdit(p.id);
                 list.appendChild(item);
             });
-        }
+        };
 
-        let currentlyEditingId = null;
-        function renderCMSEdit(id = null) {
-            currentlyEditingId = id;
+        let pendingIconData = null;
+        window.renderCMSEdit = (id = null) => {
             const main = document.getElementById('cms-main');
-            const p = id ? projects.find(proj => proj.id === id) : { id: '', brand: '', title: '', desc: '', video: '', icon: '⚙️', stats: '', customIcon: '' };
+            const p = id ? projects.find(proj => proj.id === id) : { brand: '', title: '', desc: '', video: '', icon: '⚙️', stats: '', customIcon: '' };
             
             main.innerHTML = `
                 <h3 style="margin-top:0">${id ? 'Edit ' + p.title : 'New Project'}</h3>
@@ -524,7 +599,7 @@
                 <div class="form-group">
                     <label>Project Icon:</label>
                     <div style="display:flex; align-items:center; gap:10px">
-                        <div id="icon-preview" style="width:48px; height:48px; border:1px solid #ccc; display:flex; align-items:center; justify-content:center; font-size:24px; background-size:contain; background-position:center; background-repeat:no-repeat; background-image: ${p.customIcon ? 'url('+p.customIcon+')' : 'none'}">${p.customIcon ? '' : p.icon}</div>
+                        <div id="icon-preview" style="width:48px; height:48px; border:1px solid #ccc; display:flex; align-items:center; justify-content:center; font-size:24px; background-size:contain; background-position:center; background-repeat:no-repeat; background-image: ${p.customIcon ? 'url('+p.customIcon+')' : 'none'}">${p.customIcon ? '' : (p.icon || '📂')}</div>
                         <button class="btn" onclick="document.getElementById('projectIconInput').click()">Upload Icon</button>
                     </div>
                 </div>
@@ -534,12 +609,12 @@
                     <button class="btn" onclick="renderCMSList()">Cancel</button>
                 </div>
             `;
-        }
+        };
 
-        let pendingIconData = null;
         document.getElementById('projectIconInput').onchange = (e) => {
             const file = e.target.files[0];
             if (file) {
+                if (file.size > 800000) { showStatus("Icon too large (>800kb)"); return; }
                 const reader = new FileReader();
                 reader.onload = (ev) => {
                     pendingIconData = ev.target.result;
@@ -551,33 +626,42 @@
             }
         };
 
-        function saveProject(id) {
+        window.saveProject = async (id) => {
+            if (!user) { showStatus("Authenticating..."); return; }
             const title = document.getElementById('edit-title').value;
             const brand = document.getElementById('edit-brand').value;
             const stats = document.getElementById('edit-stats').value;
             const desc = document.getElementById('edit-desc').value;
             const video = document.getElementById('edit-video').value;
             
-            if (id && id !== '' && id !== 'null') {
-                const p = projects.find(proj => proj.id === id);
-                Object.assign(p, { title, brand, stats, desc, video });
-                if (pendingIconData) p.customIcon = pendingIconData;
-            } else {
-                projects.push({ 
-                    id: 'p-' + Date.now().toString(), title, brand, stats, desc, video, 
-                    icon: '📂', customIcon: pendingIconData 
-                });
+            showStatus("Saving to Cloud...");
+            
+            const targetId = (id && id !== 'null') ? id : title.toLowerCase().replace(/\s+/g, '-');
+            const projectData = { title, brand, stats, desc, video };
+            if (pendingIconData) projectData.customIcon = pendingIconData;
+            
+            try {
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'projects', targetId), projectData, { merge: true });
+                pendingIconData = null;
+                showStatus("Saved successfully.");
+                renderCMSList();
+            } catch (e) {
+                console.error(e);
+                showStatus("Error saving to cloud.");
             }
-            pendingIconData = null;
-            updateDesktop();
-        }
+        };
 
-        function deleteProject(id) {
-            if (confirm('Delete this project?')) {
-                projects = projects.filter(p => p.id !== id);
-                updateDesktop();
+        window.deleteProject = async (id) => {
+            if (!confirm('Delete this project forever?')) return;
+            showStatus("Deleting...");
+            try {
+                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'projects', id));
+                showStatus("Deleted.");
+                renderCMSList();
+            } catch (e) {
+                showStatus("Error deleting.");
             }
-        }
+        };
 
         // --- PAINT LOGIC ---
         const canvas = document.getElementById('paintCanvas');
@@ -585,17 +669,11 @@
         let painting = false;
         let paintColor = 'black';
 
-        function setPaintColor(c) { paintColor = c; }
-        function clearPaint() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+        window.setPaintColor = (c) => { paintColor = c; };
+        window.clearPaint = () => { ctx.clearRect(0, 0, canvas.width, canvas.height); };
 
-        canvas.addEventListener('mousedown', (e) => {
-            painting = true;
-            draw(e);
-        });
-        canvas.addEventListener('mouseup', () => {
-            painting = false;
-            ctx.beginPath();
-        });
+        canvas.addEventListener('mousedown', (e) => { painting = true; draw(e); });
+        canvas.addEventListener('mouseup', () => { painting = false; ctx.beginPath(); });
         canvas.addEventListener('mousemove', draw);
 
         function draw(e) {
@@ -603,29 +681,22 @@
             const rect = canvas.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
-            
-            ctx.lineWidth = 5;
-            ctx.lineCap = 'round';
-            ctx.strokeStyle = paintColor;
-
-            ctx.lineTo(x, y);
-            ctx.stroke();
-            ctx.beginPath();
-            ctx.moveTo(x, y);
+            ctx.lineWidth = 5; ctx.lineCap = 'round'; ctx.strokeStyle = paintColor;
+            ctx.lineTo(x, y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x, y);
         }
 
         // --- AUTH & SYSTEM ---
-        function promptLogin() {
+        window.promptLogin = () => {
             document.getElementById('startMenu').style.display = 'none';
             document.getElementById('loginModal').style.display = 'block';
-        }
-        function checkPass() {
+        };
+        window.checkPass = () => {
             if (document.getElementById('passInput').value === 'bong420') {
                 document.getElementById('loginModal').style.display = 'none';
                 openWindow('control-panel');
                 renderCMSList();
-            } else { alert('Access Denied'); }
-        }
+            } else { showStatus('Access Denied'); }
+        };
 
         // Draggable
         document.addEventListener('mousedown', e => {
@@ -647,11 +718,16 @@
         });
 
         // Wallpaper
-        document.getElementById('wallpaperInput').onchange = e => {
+        document.getElementById('wallpaperInput').onchange = async (e) => {
             const file = e.target.files[0];
-            if (file) {
+            if (file && user) {
+                if (file.size > 800000) { showStatus("Image too large (>800kb)"); return; }
                 const reader = new FileReader();
-                reader.onload = ev => document.getElementById('desktop').style.backgroundImage = `url(${ev.target.result})`;
+                reader.onload = async (ev) => {
+                    const dataUrl = ev.target.result;
+                    showStatus("Saving wallpaper...");
+                    await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'appearance'), { wallpaper: dataUrl });
+                };
                 reader.readAsDataURL(file);
             }
         };
@@ -669,7 +745,8 @@
             document.getElementById('clock').innerText = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         }, 1000);
 
-        updateDesktop();
+        // Start everything
+        initAuth();
     </script>
 </body>
 </html>
