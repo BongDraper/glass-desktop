@@ -13,8 +13,8 @@
             --window-bg: #ece9d8;
             /* Authentic XP Desktop Icon Dimensions */
             --icon-size: 48px;
-            --icon-spacing-x: 80px;
-            --icon-spacing-y: 100px;
+            --icon-spacing-x: 100px;
+            --icon-spacing-y: 110px;
         }
 
         * { box-sizing: border-box; user-select: none; }
@@ -26,7 +26,7 @@
             background-color: #000;
         }
 
-        /* The Desktop Background - Updated to .webp with leading space */
+        /* The Desktop Background - Hardcoded to -11.webp with leading space */
         .desktop {
             height: calc(100vh - var(--taskbar-height)); 
             width: 100vw;
@@ -132,14 +132,14 @@
         /* --- DESKTOP ICONS --- */
         .icon-grid {
             position: absolute; 
-            top: 45px; /* Significant padding to prevent top overlap */
-            left: 20px;
+            top: 80px; /* Increased padding to prevent top edge overlap */
+            left: 30px; /* Increased side padding */
             display: grid;
             grid-template-columns: repeat(auto-fill, var(--icon-spacing-x));
             grid-template-rows: repeat(auto-fill, var(--icon-spacing-y));
             grid-auto-flow: column;
-            gap: 15px;
-            height: calc(100% - 70px);
+            gap: 10px;
+            height: calc(100% - 120px);
         }
 
         .desktop-icon { 
@@ -253,7 +253,7 @@
         </div>
 
         <!-- ABOUT ME WINDOW -->
-        <div class="window" id="about-me" style="width: 450px; top: 50px; left: 100px;">
+        <div class="window" id="about-me" style="width: 450px; top: 120px; left: 150px;">
             <div class="window-header">
                 <span>About Maximiliano Gaudelli</span>
                 <div class="win-controls"><div class="win-btn win-close" onclick="closeWindow('about-me')">X</div></div>
@@ -385,8 +385,8 @@
             win.className = 'window';
             win.id = p.id;
             win.style.width = '500px';
-            win.style.top = (60 + (index * 15)) + 'px';
-            win.style.left = (120 + (index * 20)) + 'px';
+            win.style.top = (100 + (index * 15)) + 'px';
+            win.style.left = (180 + (index * 20)) + 'px';
             win.innerHTML = `
                 <div class="window-header">
                     <span>${p.brand} - ${p.title}</span>
