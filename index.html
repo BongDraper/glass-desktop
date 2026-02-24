@@ -18,12 +18,14 @@
             height: 100%; margin: 0; padding: 0;
             font-family: 'Tahoma', 'Segoe UI', sans-serif;
             overflow: hidden;
+            background-color: #000; /* Darker base for better contrast */
         }
 
-        /* The Desktop Background */
+        /* The Desktop Background - Constrained height */
         .desktop {
-            height: 100vh; width: 100vw;
-            background: url('%20-11.jpg') no-repeat center center fixed;
+            height: calc(100vh - var(--taskbar-height)); 
+            width: 100vw;
+            background: url('%20-11.jpg') no-repeat center center;
             background-size: cover;
             background-color: #0078d7;
             position: relative;
