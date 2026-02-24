@@ -7,14 +7,15 @@
     <style>
         :root {
             --xp-blue: #245edb;
+            --xp-light-blue: #dbeafe;
             --xp-orange: #ff8c00;
             --taskbar-height: 40px;
             --start-width: 380px;
             --window-bg: #ece9d8;
             /* Authentic XP Desktop Icon Dimensions */
             --icon-size: 48px;
-            --icon-spacing-x: 100px;
-            --icon-spacing-y: 110px;
+            --icon-spacing-x: 90px;
+            --icon-spacing-y: 100px;
         }
 
         * { box-sizing: border-box; user-select: none; }
@@ -26,7 +27,7 @@
             background-color: #000;
         }
 
-        /* The Desktop Background - Hardcoded to -11.webp with leading space */
+        /* The Desktop Background */
         .desktop {
             height: calc(100vh - var(--taskbar-height)); 
             width: 100vw;
@@ -88,7 +89,6 @@
         }
 
         .menu-item:hover { background: #316ac5; color: white; }
-        .menu-item strong { margin-left: auto; }
 
         .start-footer {
             background: linear-gradient(to bottom, #1159d2 0%, #3f8cf3 100%);
@@ -132,14 +132,14 @@
         /* --- DESKTOP ICONS --- */
         .icon-grid {
             position: absolute; 
-            top: 80px; /* Increased padding to prevent top edge overlap */
-            left: 30px; /* Increased side padding */
+            top: 15px;
+            left: 10px;
             display: grid;
             grid-template-columns: repeat(auto-fill, var(--icon-spacing-x));
             grid-template-rows: repeat(auto-fill, var(--icon-spacing-y));
             grid-auto-flow: column;
             gap: 10px;
-            height: calc(100% - 120px);
+            height: calc(100% - 30px);
         }
 
         .desktop-icon { 
@@ -191,7 +191,6 @@
             display: none;
             flex-direction: column;
             z-index: 100;
-            min-width: 350px;
         }
 
         .window-header {
@@ -209,81 +208,125 @@
         .win-close { background: #e81123; }
 
         .window-body {
-            padding: 10px; background: white; margin: 2px; border: 1px solid #919b9c;
-            overflow-y: auto; max-height: 70vh;
+            padding: 0; background: white; margin: 2px; border: 1px solid #919b9c;
+            overflow-y: auto; max-height: 75vh;
+            display: flex; flex-direction: column;
         }
 
-        .media-window {
-            width: 100%; aspect-ratio: 16/9; background: #000;
-            margin: 10px 0; display: flex; align-items: center; justify-content: center;
-            color: #666; font-size: 12px; border: 1px solid #ccc;
+        /* --- CMS / CONTROL PANEL SPECIFIC --- */
+        .cp-container { display: flex; height: 500px; width: 750px; background: white; }
+        .cp-sidebar {
+            width: 180px;
+            background: linear-gradient(to bottom, #7a9ee0 0%, #b3c8f0 100%);
+            padding: 15px;
+            display: flex; flex-direction: column; gap: 10px;
         }
+        .cp-main { flex: 1; padding: 20px; overflow-y: auto; }
+        
+        .cp-box {
+            background: white; border: 1px solid #7a9ee0; border-radius: 5px;
+            padding: 10px; margin-bottom: 20px;
+        }
+        .cp-box-title { font-weight: bold; color: #003096; font-size: 13px; margin-bottom: 10px; }
+        .cp-link { color: #003096; font-size: 12px; cursor: pointer; text-decoration: none; display: block; margin-bottom: 5px; }
+        .cp-link:hover { text-decoration: underline; }
 
-        .media-window iframe { width: 100%; height: 100%; border: none; }
+        .cms-list-item {
+            border: 1px solid #ccc; padding: 10px; margin-bottom: 5px;
+            display: flex; align-items: center; cursor: pointer; font-size: 13px; font-weight: bold;
+        }
+        .cms-list-item:hover { background: #f0f0f0; }
+        .cms-list-item::before { content: '✎'; margin-right: 10px; }
 
-        .project-brand { font-size: 11px; text-transform: uppercase; color: #666; font-weight: bold; }
-        .project-title { font-size: 18px; margin: 2px 0 10px 0; color: #000; }
-        .project-desc { font-size: 12px; line-height: 1.4; color: #333; }
-        .project-stats { margin-top: 10px; font-size: 11px; font-weight: bold; color: var(--xp-blue); }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 5px; }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%; padding: 5px; border: 1px solid #919b9c; font-family: inherit;
+        }
+        .form-actions { display: flex; gap: 10px; margin-top: 20px; }
+        .btn { padding: 5px 15px; cursor: pointer; border: 1px solid #919b9c; background: #eee; }
+        .btn-primary { background: var(--xp-blue); color: white; border-color: #003096; }
+        .btn-danger { background: #e81123; color: white; border-color: #900; }
 
-        /* --- CONTROL PANEL MODAL --- */
+        /* Project View Specifics */
+        .project-content { padding: 20px; color: #333; }
+        .media-container { width: 100%; aspect-ratio: 16/9; background: #000; margin: 15px 0; }
+        .media-container iframe { width: 100%; height: 100%; border: none; }
+
+        /* Login Modal */
         #loginModal {
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
             background: var(--window-bg); border: 3px solid #0058e6; border-radius: 8px 8px 0 0;
-            z-index: 20000; display: none; width: 300px;
+            z-index: 20000; display: none; width: 300px; padding: 2px;
         }
 
-        /* Scrollbar customization for that XP feel */
-        .window-body::-webkit-scrollbar { width: 16px; }
-        .window-body::-webkit-scrollbar-track { background: #f1f1f1; }
-        .window-body::-webkit-scrollbar-thumb { background: #ccc; border: 2px solid #f1f1f1; }
+        /* Icons List for CMS */
+        .icon-picker { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 5px; }
+        .icon-opt { cursor: pointer; padding: 5px; border: 1px solid transparent; font-size: 20px; }
+        .icon-opt.selected { border-color: var(--xp-blue); background: #dbeafe; }
+
     </style>
 </head>
 <body>
 
     <div class="desktop" id="desktop">
         
-        <!-- Desktop Icons Generated via Script -->
         <div class="icon-grid" id="iconGrid">
-            <div class="desktop-icon" onclick="openWindow('about-me')">
-                <div class="icon-display">👤</div>
-                <div class="icon-label">About Me</div>
-            </div>
-            <!-- Projects will be injected here -->
+            <!-- Icons generated via script -->
         </div>
 
         <!-- ABOUT ME WINDOW -->
-        <div class="window" id="about-me" style="width: 450px; top: 120px; left: 150px;">
+        <div class="window" id="about-me" style="width: 450px; top: 80px; left: 150px;">
             <div class="window-header">
                 <span>About Maximiliano Gaudelli</span>
                 <div class="win-controls"><div class="win-btn win-close" onclick="closeWindow('about-me')">X</div></div>
             </div>
             <div class="window-body">
-                <h2 style="margin-top:0">Maximiliano Gaudelli</h2>
-                <p class="project-brand">Writer + ACD</p>
-                <p class="project-desc">
-                    Found my calling as a writer through some truly cringey Tumblr blogs about music and culture. Since then I've led teams and campaigns from first concept to award wins. I care deeply about the work. The opposite of nonchalant.
-                </p>
-                <hr>
-                <h4 style="margin-bottom:5px">Experience</h4>
-                <div class="project-desc" style="font-size: 11px;">
-                    <strong>2024-2025:</strong> Senior Copywriter @ The Community Miami<br>
-                    <strong>2022-2024:</strong> ACD @ Dentsu Creative New York<br>
-                    <strong>2020-2022:</strong> Senior Copywriter @ Ogilvy Miami & Mexico<br>
-                    <strong>2018-2020:</strong> Associate Copywriter @ Ogilvy Tokyo<br>
-                    <strong>2014-2016:</strong> Associate Copywriter @ LaFusión Buenos Aires<br>
-                    <strong>Internship:</strong> Culture Intern @ VICE Media Mexico
-                </div>
-                <h4 style="margin-bottom:5px">Education</h4>
-                <div class="project-desc" style="font-size: 11px;">
-                    Portfolio Program @ Miami Ad School (2017-2019)<br>
-                    Digital Mkt. Bootcamp @ Miami Ad School (2021)<br>
-                    AI for Brands Masters @ Miami Ad School (2022-2023)
+                <div class="project-content">
+                    <h2 style="margin-top:0">Maximiliano Gaudelli</h2>
+                    <p style="text-transform:uppercase; font-size:11px; font-weight:bold; color:#666">Writer + ACD</p>
+                    <p style="font-size:13px; line-height:1.5">
+                        Found my calling as a writer through some truly cringey Tumblr blogs about music and culture. Since then I've led teams and campaigns from first concept to award wins. I care deeply about the work. The opposite of nonchalant.
+                    </p>
+                    <hr>
+                    <h4>Experience</h4>
+                    <p style="font-size:12px">
+                        <strong>The Community Miami (2024-2025):</strong> Senior Copywriter<br>
+                        <strong>Dentsu Creative New York (2022-2024):</strong> Associate Creative Director<br>
+                        <strong>Ogilvy Miami & Mexico (2020-2022):</strong> Senior Copywriter<br>
+                        <strong>Ogilvy Tokyo (2018-2020):</strong> Associate Copywriter<br>
+                        <strong>LaFusión Buenos Aires (2014-2016):</strong> Associate Copywriter
+                    </p>
                 </div>
             </div>
         </div>
 
-        <!-- PROJECT WINDOW TEMPLATE -->
+        <!-- CMS / CONTROL PANEL WINDOW -->
+        <div class="window" id="control-panel" style="top: 50px; left: 50px;">
+            <div class="window-header">
+                <span>Control Panel</span>
+                <div class="win-controls"><div class="win-btn win-close" onclick="closeWindow('control-panel')">X</div></div>
+            </div>
+            <div class="window-body">
+                <div class="cp-container">
+                    <div class="cp-sidebar">
+                        <div class="cp-box">
+                            <div class="cp-box-title">Control Panel</div>
+                            <div class="cp-link" onclick="renderCMSList()">All Projects</div>
+                            <div class="cp-link" onclick="renderCMSEdit()">+ Add New</div>
+                        </div>
+                        <div class="cp-box">
+                            <div class="cp-box-title">See Also</div>
+                            <div class="cp-link">Windows Update</div>
+                        </div>
+                    </div>
+                    <div class="cp-main" id="cms-main">
+                        <!-- CMS content injected here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div id="project-windows-container"></div>
 
         <!-- START MENU -->
@@ -295,17 +338,13 @@
             <div class="start-columns">
                 <div class="start-left">
                     <div class="menu-item" onclick="openWindow('about-me')">👤 About Me</div>
-                    <div class="menu-item" onclick="alert('Opening Browser...')">🌐 Internet Explorer</div>
-                    <hr style="border:0; border-top:1px solid #eee; margin: 5px 10px;">
                     <div class="menu-item">📝 Notepad</div>
                     <div class="menu-item">🎨 Paint</div>
                 </div>
                 <div class="start-right">
-                    <div class="menu-item" style="font-weight: bold;">My Projects</div>
-                    <div class="menu-item" style="font-weight: bold;">My Resume</div>
+                    <div class="menu-item" style="font-weight:bold">My Projects</div>
                     <hr style="border:0; border-top:1px solid #91b0df; margin: 5px 10px;">
-                    <!-- CONTROL PANEL -->
-                    <div class="menu-item" onclick="promptLogin()" style="font-weight: bold;">🛠️ Control Panel</div>
+                    <div class="menu-item" onclick="promptLogin()">🛠️ Control Panel</div>
                     <div class="menu-item">Help and Support</div>
                 </div>
             </div>
@@ -317,33 +356,16 @@
         <!-- LOGIN MODAL -->
         <div id="loginModal">
             <div class="window-header"><span>System Login</span><div class="win-controls"><div class="win-btn win-close" onclick="document.getElementById('loginModal').style.display='none'">X</div></div></div>
-            <div class="window-body">
-                <p style="font-size:12px">Please enter administrator password:</p>
-                <input type="password" id="passInput" style="width:100%; margin-bottom:10px;">
+            <div class="window-body" style="padding:15px">
+                <p style="font-size:12px; margin-top:0">Enter Administrator Password:</p>
+                <input type="password" id="passInput" style="width:100%; margin-bottom:10px">
                 <button onclick="checkPass()" style="width:100%">Enter</button>
-            </div>
-        </div>
-
-        <!-- CMS / CONTROL PANEL WINDOW -->
-        <div class="window" id="control-panel" style="width: 400px; top: 100px; left: 150px;">
-            <div class="window-header">
-                <span>Bong OS - Control Panel</span>
-                <div class="win-controls"><div class="win-btn win-close" onclick="closeWindow('control-panel')">X</div></div>
-            </div>
-            <div class="window-body">
-                <h3 style="margin-top:0">System Administration</h3>
-                <div class="menu-item" onclick="triggerWallpaperUpload()" style="color:blue">🖼️ Change Global Wallpaper</div>
-                <div class="menu-item" onclick="alert('Icon Management coming soon...')" style="color:blue">📁 Manage Desktop Icons</div>
-                <hr>
-                <p style="font-size:11px">Project CMS (Beta): Select a project to edit metadata or video links.</p>
-                <select id="cmsSelect" style="width:100%"></select>
             </div>
         </div>
 
     </div>
 
-    <!-- Hidden Inputs -->
-    <input type="file" id="wallpaperInput" style="display: none;" accept="image/*">
+    <input type="file" id="wallpaperInput" style="display:none" accept="image/*">
 
     <div class="taskbar">
         <button class="start-btn" id="startBtn">start</button>
@@ -351,147 +373,243 @@
     </div>
 
     <script>
-        const projects = [
-            { id: 'kddi', brand: 'KDDI Japan', title: 'Virtual Shibuya Halloween', icon: '🎃', desc: 'As Halloween approached, the widely enjoyed holiday in Japan couldn\'t be normally celebrated, not in COVID-stricken 2020. So, instead, the two brands, Shibuya and au, built, block-by-block, a virtual Shibuya City that would hold the largest ever Halloween gathering.', stats: '3x The Drum awards | Cannes Lions Shortlist | $20M Earned Media', video: '' },
-            { id: 'uber', brand: 'Uber Eats', title: 'Smart Spokes', icon: '🚲', desc: 'Teaming up with tech startup Eyes Japan, Ogilvy Tokyo launched a road safety campaign using UberEats delivery bicycles as the medium. Equipped with Gyrokinetic LEDs that turned each wheel into a digital screen.', stats: '2x D&AD Graphite Pencils | 2x The Drum Awards | Cannes Lions Shortlist', video: '' },
-            { id: 'apple-mom', brand: 'Apple x T-Mobile', title: 'Mom Knows', icon: '📱', desc: 'To launch the new iPhone 16 Pro, T-Mobile teamed up with Apple for a nationwide campaign starring SNL’s Marcello Hernandez and his real-life mom, Isabel.', stats: 'Nationwide Campaign | Starring Marcello Hernandez', video: '' },
-            { id: 'samsung-copa', brand: 'Samsung x T-Mobile', title: 'Copa America 2024', icon: '⚽', desc: 'For Copa América 2024, T-Mobile launched a national spot celebrating the gameday rituals fans swear by. Introducing the new Galaxy S24.', stats: 'National Spot | Partnership with Samsung Electronics', video: '' },
-            { id: 'apple-giver', brand: 'Apple x T-Mobile', title: 'The Big Giver', icon: '🎁', desc: 'New Product Introduction for the launch of the brand-new iPhone 16. Featuring Marcello Hernandez.', stats: 'Nationwide Launch | Holiday Feature Spot', video: '' },
-            { id: 'samsung-s25', brand: 'Samsung x T-Mobile', title: 'Galaxy S25 Launch', icon: '✨', desc: 'For the nationwide launch of the Samsung Galaxy S25, T-Mobile partnered with Samsung Electronics featuring global superstar Natti Natasha.', stats: 'NPI Campaign | Natti Natasha Feature', video: '' },
-            { id: 'kfc-air', brand: 'KFC', title: 'Love is in the AI.R', icon: '🍗', desc: 'For Valentine’s Day, we launched the first brand-led social activation using AI at scale in LATAM. Sanders transformed fan details into love letters.', stats: 'LATAM Region | AI Integration', video: '' },
-            { id: 'audi', brand: 'Audi', title: 'It Matters', icon: '🚗', desc: 'Hispanic market nationwide feature film development for the 2024 Audi SUV family.', stats: 'Nationwide | Feature Development', video: '' },
-            { id: 'kfc-fingers', brand: 'KFC', title: 'Fingers', icon: '🖐️', desc: 'LATAM + Caribbean region-wide. +42 markets. 3 languages (3 songs).', stats: 'Regional Campaign | 42+ Markets', video: '' },
-            { id: 'gerber', brand: 'Gerber', title: 'Decisiones', icon: '👶', desc: 'Hispanic market double feature film development for the ‘Gerber Experts’ platform nationwide.', stats: 'Hispanic Market | Nationwide', video: '' },
-            { id: 'subway', brand: 'Subway', title: 'Moving', icon: '🥪', desc: 'Nationwide launch of the BOGO Meal Deals. An offer so good, you’ll forget about everything else...', stats: 'Nationwide Launch | BOGO Campaign', video: '' },
-            { id: 'tmobile-nail', brand: 'T-Mobile', title: 'Nailed It', icon: '💅', desc: 'Carrier nationwide release for the new ‘5-Year plan Guarantee’', stats: 'Nationwide Release', video: '' },
-            { id: 'chubb', brand: 'Chubb Insurance', title: 'No piensas en Chubb', icon: '🛡️', desc: 'Regional Manifesto refresh across Latin America in over 25 countries.', stats: 'LATAM Regional | 25+ Countries', video: '' }
+        // --- DATA ---
+        let projects = [
+            { id: 'kddi', brand: 'KDDI Japan', title: 'Virtual Shibuya Halloween', icon: '🎃', desc: 'As Halloween approached, the widely enjoyed holiday in Japan couldn\'t be normally celebrated... built, block-by-block, a virtual Shibuya City.', stats: '3x The Drum awards | Cannes Lions Shortlist | $20M Earned Media', video: '' },
+            { id: 'uber', brand: 'Uber Eats', title: 'Smart Spokes', icon: '🚲', desc: 'Uber Eats bikes were equipped with Gyrokinetic LEDs that turned each wheel into a digital screen displaying safety messages.', stats: '2x D&AD Graphite Pencils | Cannes Lions Shortlist', video: '' },
+            { id: 'apple-mom', brand: 'Apple x T-Mobile', title: 'Mom Knows', icon: '📱', desc: 'Nationwide campaign starring SNL’s Marcello Hernandez and his real-life mom, Isabel. Co-written with Marcello.', stats: 'Nationwide Launch | iPhone 16 Pro', video: '' }
         ];
 
-        // Initialize Desktop and Windows
-        const grid = document.getElementById('iconGrid');
-        const winContainer = document.getElementById('project-windows-container');
-        const cmsSelect = document.getElementById('cmsSelect');
+        const defaultIcons = ['🎃', '🚲', '📱', '⚽', '🎁', '✨', '🍗', '🚗', '🖐️', '👶', '🥪', '💅', '🛡️', '⚙️', '📂', '📄'];
 
-        projects.forEach((p, index) => {
-            // Create Icon
-            const icon = document.createElement('div');
-            icon.className = 'desktop-icon';
-            icon.onclick = () => openWindow(p.id);
-            icon.innerHTML = `<div class="icon-display">${p.icon}</div><div class="icon-label">${p.title}</div>`;
-            grid.appendChild(icon);
+        // --- CORE UI LOGIC ---
+        function updateDesktop() {
+            const grid = document.getElementById('iconGrid');
+            grid.innerHTML = '';
+            
+            // Fixed System Icons
+            grid.innerHTML += `
+                <div class="desktop-icon" onclick="openWindow('about-me')">
+                    <div class="icon-display">👤</div>
+                    <div class="icon-label">About Me</div>
+                </div>
+            `;
 
-            // Create Window
-            const win = document.createElement('div');
-            win.className = 'window';
-            win.id = p.id;
-            win.style.width = '500px';
-            win.style.top = (100 + (index * 15)) + 'px';
-            win.style.left = (180 + (index * 20)) + 'px';
+            // Dynamic Project Icons
+            projects.forEach(p => {
+                const icon = document.createElement('div');
+                icon.className = 'desktop-icon';
+                icon.onclick = () => openProjectWindow(p.id);
+                icon.innerHTML = `
+                    <div class="icon-display" style="${p.customIcon ? `background-image:url(${p.customIcon})` : ''}">${p.customIcon ? '' : p.icon}</div>
+                    <div class="icon-label">${p.title}</div>
+                `;
+                grid.appendChild(icon);
+            });
+            
+            renderCMSList();
+        }
+
+        function openProjectWindow(id) {
+            const p = projects.find(proj => proj.id === id);
+            if (!p) return;
+            
+            // Check if window exists
+            let win = document.getElementById(`win-${id}`);
+            if (!win) {
+                win = document.createElement('div');
+                win.id = `win-${id}`;
+                win.className = 'window';
+                win.style.width = '600px';
+                win.style.top = '100px';
+                win.style.left = '200px';
+                document.getElementById('project-windows-container').appendChild(win);
+            }
+            
+            // Determine video embed
+            let videoHtml = `<div class="media-container">[ No Media Linked ]</div>`;
+            if (p.video) {
+                if (p.video.includes('youtube.com') || p.video.includes('youtu.be')) {
+                    const vidId = p.video.split('v=')[1] || p.video.split('/').pop();
+                    videoHtml = `<div class="media-container"><iframe src="https://www.youtube.com/embed/${vidId}"></iframe></div>`;
+                } else if (p.video.includes('vimeo.com')) {
+                    const vidId = p.video.split('/').pop();
+                    videoHtml = `<div class="media-container"><iframe src="https://player.vimeo.com/video/${vidId}"></iframe></div>`;
+                } else {
+                    videoHtml = `<div class="media-container"><video src="${p.video}" controls style="width:100%; height:100%"></video></div>`;
+                }
+            }
+
             win.innerHTML = `
                 <div class="window-header">
                     <span>${p.brand} - ${p.title}</span>
-                    <div class="win-controls"><div class="win-btn win-close" onclick="closeWindow('${p.id}')">X</div></div>
+                    <div class="win-controls"><div class="win-btn win-close" onclick="closeWindow('win-${id}')">X</div></div>
                 </div>
                 <div class="window-body">
-                    <p class="project-brand">${p.brand}</p>
-                    <h1 class="project-title">${p.title}</h1>
-                    <div class="media-window" id="media-${p.id}">
-                        ${p.video ? `<iframe src="${p.video}"></iframe>` : `[ No Video Linked - Use Control Panel ]`}
+                    <div class="project-content">
+                        <p class="project-brand">${p.brand}</p>
+                        <h2 class="project-title" style="margin-top:0">${p.title}</h2>
+                        ${videoHtml}
+                        <p class="project-desc">${p.desc}</p>
+                        <p style="font-size:11px; font-weight:bold; color:var(--xp-blue)">${p.stats || ''}</p>
                     </div>
-                    <p class="project-desc">${p.desc}</p>
-                    <p class="project-stats">${p.stats}</p>
                 </div>
             `;
-            winContainer.appendChild(win);
-
-            // Add to CMS Select
-            const opt = document.createElement('option');
-            opt.value = p.id;
-            opt.innerText = p.title;
-            cmsSelect.appendChild(opt);
-        });
-
-        // Basic OS Logic
-        function openWindow(id) {
-            const win = document.getElementById(id);
+            
             win.style.display = 'flex';
+            focusWindow(win.id);
+        }
+
+        function closeWindow(id) { document.getElementById(id).style.display = 'none'; }
+        function openWindow(id) { document.getElementById(id).style.display = 'flex'; focusWindow(id); }
+        function focusWindow(id) {
             document.querySelectorAll('.window').forEach(w => w.style.zIndex = 100);
-            win.style.zIndex = 200;
-            document.getElementById('startMenu').style.display = 'none';
+            document.getElementById(id).style.zIndex = 200;
         }
 
-        function closeWindow(id) {
-            document.getElementById(id).style.display = 'none';
+        // --- CMS LOGIC ---
+        function renderCMSList() {
+            const main = document.getElementById('cms-main');
+            main.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px">
+                    <h3 style="margin:0">Pick a task...</h3>
+                    <button class="btn btn-primary" onclick="renderCMSEdit()">+ Add New</button>
+                </div>
+                <div id="cms-list"></div>
+                <hr>
+                <div class="cp-box-title">Display Properties</div>
+                <p style="font-size:12px">Desktop Background:</p>
+                <button class="btn" onclick="document.getElementById('wallpaperInput').click()">Choose File...</button>
+            `;
+            
+            const list = document.getElementById('cms-list');
+            projects.forEach(p => {
+                const item = document.createElement('div');
+                item.className = 'cms-list-item';
+                item.innerText = `${p.brand} ${p.title}`;
+                item.onclick = () => renderCMSEdit(p.id);
+                list.appendChild(item);
+            });
         }
 
+        function renderCMSEdit(id = null) {
+            const main = document.getElementById('cms-main');
+            const p = id ? projects.find(proj => proj.id === id) : { id: '', brand: '', title: '', desc: '', video: '', icon: '⚙️' };
+            
+            main.innerHTML = `
+                <h3 style="margin-top:0">${id ? 'Edit Properties' : 'New Project'}</h3>
+                <div class="form-group">
+                    <label>Title:</label>
+                    <input type="text" id="edit-title" value="${p.title}">
+                </div>
+                <div class="form-group">
+                    <label>Client / Brand:</label>
+                    <input type="text" id="edit-brand" value="${p.brand}">
+                </div>
+                <div class="form-group">
+                    <label>Description:</label>
+                    <textarea id="edit-desc" rows="4">${p.desc}</textarea>
+                </div>
+                <div class="form-group">
+                    <label>Media Link (YT/Vimeo/Direct):</label>
+                    <input type="text" id="edit-video" value="${p.video}" placeholder="https://...">
+                </div>
+                <div class="form-group">
+                    <label>Select Icon:</label>
+                    <div class="icon-picker" id="icon-picker"></div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn btn-primary" onclick="saveProject('${id}')">Apply Changes</button>
+                    ${id ? `<button class="btn btn-danger" onclick="deleteProject('${id}')">Delete</button>` : ''}
+                    <button class="btn" onclick="renderCMSList()">Cancel</button>
+                </div>
+            `;
+            
+            const picker = document.getElementById('icon-picker');
+            defaultIcons.forEach(icon => {
+                const opt = document.createElement('div');
+                opt.className = `icon-opt ${p.icon === icon ? 'selected' : ''}`;
+                opt.innerText = icon;
+                opt.onclick = () => {
+                    document.querySelectorAll('.icon-opt').forEach(o => o.classList.remove('selected'));
+                    opt.classList.add('selected');
+                    p.icon = icon;
+                };
+                picker.appendChild(opt);
+            });
+        }
+
+        function saveProject(id) {
+            const title = document.getElementById('edit-title').value;
+            const brand = document.getElementById('edit-brand').value;
+            const desc = document.getElementById('edit-desc').value;
+            const video = document.getElementById('edit-video').value;
+            const icon = document.querySelector('.icon-opt.selected')?.innerText || '⚙️';
+            
+            if (id && id !== 'null') {
+                const p = projects.find(proj => proj.id === id);
+                Object.assign(p, { title, brand, desc, video, icon });
+            } else {
+                projects.push({ id: Date.now().toString(), title, brand, desc, video, icon });
+            }
+            updateDesktop();
+        }
+
+        function deleteProject(id) {
+            if (confirm('Are you sure you want to delete this project?')) {
+                projects = projects.filter(p => p.id !== id);
+                updateDesktop();
+            }
+        }
+
+        // --- AUTH & SYSTEM ---
         function promptLogin() {
             document.getElementById('startMenu').style.display = 'none';
             document.getElementById('loginModal').style.display = 'block';
         }
-
         function checkPass() {
-            const input = document.getElementById('passInput').value;
-            if (input === 'bong420') {
+            if (document.getElementById('passInput').value === 'bong420') {
                 document.getElementById('loginModal').style.display = 'none';
                 openWindow('control-panel');
-            } else {
-                alert('Access Denied: Incorrect Password');
-            }
+            } else { alert('Access Denied'); }
         }
 
-        // Draggable Windows
-        document.addEventListener('mousedown', (e) => {
+        // Draggable
+        document.addEventListener('mousedown', e => {
             const header = e.target.closest('.window-header');
             if (!header) return;
             const win = header.parentElement;
-            let isDragging = true;
+            focusWindow(win.id);
             let offset = { x: e.clientX - win.offsetLeft, y: e.clientY - win.offsetTop };
-            
-            win.style.zIndex = 300; // Bring to front
-
-            const move = (moveE) => {
-                if (!isDragging) return;
-                win.style.left = (moveE.clientX - offset.x) + 'px';
-                win.style.top = (moveE.clientY - offset.y) + 'px';
-            };
-
-            const stop = () => {
-                isDragging = false;
-                document.removeEventListener('mousemove', move);
-                document.removeEventListener('mouseup', stop);
-            };
-
-            document.addEventListener('mousemove', move);
-            document.addEventListener('mouseup', stop);
+            const onMove = moveE => { win.style.left = (moveE.clientX - offset.x) + 'px'; win.style.top = (moveE.clientY - offset.y) + 'px'; };
+            const onUp = () => { document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp); };
+            document.addEventListener('mousemove', onMove); document.addEventListener('mouseup', onUp);
         });
 
-        // Start Menu Toggle
-        const startBtn = document.getElementById('startBtn');
-        const startMenu = document.getElementById('startMenu');
-        startBtn.onclick = (e) => {
-            e.stopPropagation();
-            startMenu.style.display = startMenu.style.display === 'flex' ? 'none' : 'flex';
-        };
-        document.onclick = (e) => { if(!startMenu.contains(e.target) && e.target !== startBtn) startMenu.style.display = 'none'; };
-
-        // Clock
-        function updateClock() {
-            const now = new Date();
-            document.getElementById('clock').innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        }
-        setInterval(updateClock, 1000); updateClock();
-
-        // Wallpaper Logic
-        const wallpaperInput = document.getElementById('wallpaperInput');
-        function triggerWallpaperUpload() { wallpaperInput.click(); }
-        wallpaperInput.onchange = (e) => {
+        // Wallpaper
+        document.getElementById('wallpaperInput').onchange = e => {
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = (ev) => document.getElementById('desktop').style.backgroundImage = `url('${ev.target.result}')`;
+                reader.onload = ev => document.getElementById('desktop').style.backgroundImage = `url(${ev.target.result})`;
                 reader.readAsDataURL(file);
             }
         };
+
+        // Start Menu
+        document.getElementById('startBtn').onclick = e => {
+            e.stopPropagation();
+            const sm = document.getElementById('startMenu');
+            sm.style.display = sm.style.display === 'flex' ? 'none' : 'flex';
+        };
+        window.onclick = () => document.getElementById('startMenu').style.display = 'none';
+
+        // Clock
+        setInterval(() => {
+            document.getElementById('clock').innerText = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }, 1000);
+
+        updateDesktop();
     </script>
 </body>
 </html>
