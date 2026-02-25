@@ -1,0 +1,245 @@
+        :root {
+            --xp-blue: #245edb;
+            --xp-light-blue: #dbeafe;
+            --xp-orange: #ff8c00;
+            --taskbar-height: 40px;
+            --start-width: 380px;
+            --window-bg: #ece9d8;
+            /* Authentic XP Desktop Icon Dimensions */
+            --icon-size: 48px;
+            --icon-spacing-x: 90px;
+            --icon-spacing-y: 110px;
+        }
+
+        * { box-sizing: border-box; user-select: none; }
+
+        body, html {
+            height: 100%; margin: 0; padding: 0;
+            font-family: 'Tahoma', 'Segoe UI', sans-serif;
+            overflow: hidden;
+            background-color: #000;
+        }
+
+        /* The Desktop Background */
+        #desktop {
+            height: calc(100vh - var(--taskbar-height)); 
+            width: 100vw;
+            background: url('../%20-11.webp') no-repeat center center;
+            background-size: cover;
+            background-color: #0078d7;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* --- START MENU --- */
+        .start-menu {
+            position: fixed;
+            bottom: var(--taskbar-height);
+            left: 0;
+            width: var(--start-width);
+            background: white;
+            border-radius: 5px 5px 0 0;
+            box-shadow: 2px -2px 10px rgba(0,0,0,0.3);
+            display: none;
+            flex-direction: column;
+            z-index: 10000;
+            border: 1px solid #003096;
+            overflow: hidden;
+        }
+
+        .start-header {
+            background: linear-gradient(to bottom, #1159d2 0%, #3f8cf3 50%, #1159d2 100%);
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+            border-bottom: 1px solid #003096;
+        }
+
+        .user-icon {
+            width: 40px; height: 40px;
+            background: #fff;
+            border: 2px solid rgba(255,255,255,0.5);
+            border-radius: 4px;
+            margin-right: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px;
+        }
+
+        .start-columns { display: flex; height: 400px; }
+        .start-left { flex: 1.2; background: white; padding: 10px 0; }
+        .start-right { flex: 1; background: #dbeafe; border-left: 2px solid #91b0df; padding: 10px 0; }
+
+        .menu-item {
+            padding: 8px 15px;
+            display: flex;
+            align-items: center;
+            font-size: 12px;
+            cursor: pointer;
+            color: #333;
+        }
+
+        .menu-item:hover { background: #316ac5; color: white; }
+
+        .start-footer {
+            background: linear-gradient(to bottom, #1159d2 0%, #3f8cf3 100%);
+            padding: 8px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .footer-btn {
+            background: none; border: none; color: white;
+            font-size: 12px; cursor: pointer; display: flex; align-items: center;
+        }
+
+        /* --- TASKBAR --- */
+        .taskbar {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            height: var(--taskbar-height);
+            background: linear-gradient(to bottom, #245edb 0%, #3f8cf3 9%, #245edb 18%, #245edb 92%, #1941a5 100%);
+            display: flex; align-items: center; z-index: 9999;
+        }
+
+        .start-btn {
+            height: 100%;
+            background: linear-gradient(to bottom, #3dbd3d 0%, #218521 100%);
+            padding: 0 15px;
+            display: flex; align-items: center;
+            color: white; font-weight: bold; font-style: italic; font-size: 16px;
+            border-radius: 0 10px 10px 0;
+            border: none; cursor: pointer;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.3);
+        }
+
+        .system-tray {
+            margin-left: auto;
+            background: linear-gradient(to bottom, #0997ff 0%, #0053ee 100%);
+            height: 100%; display: flex; align-items: center; padding: 0 15px;
+            color: white; font-size: 12px; border-left: 1px solid #0840b3;
+        }
+
+        /* --- DESKTOP ICONS --- */
+        .icon-grid {
+            position: absolute; 
+            top: 45px; 
+            left: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, var(--icon-spacing-x));
+            grid-template-rows: repeat(auto-fill, var(--icon-spacing-y));
+            grid-auto-flow: column;
+            gap: 10px;
+            height: calc(100% - 60px);
+        }
+
+        .desktop-icon { 
+            width: var(--icon-spacing-x); 
+            text-align: center; 
+            cursor: pointer; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center;
+            padding: 5px;
+        }
+
+        .desktop-icon:hover .icon-label { background-color: #0a5fcf; }
+        
+        .icon-display {
+            width: var(--icon-size); 
+            height: var(--icon-size); 
+            font-size: 32px;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            background-size: contain; 
+            background-position: center; 
+            background-repeat: no-repeat;
+            margin-bottom: 6px;
+            filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.3));
+        }
+
+        .icon-label {
+            color: white; font-size: 11px; text-shadow: 1px 1px 1px black;
+            padding: 2px 4px; border-radius: 2px;
+            max-width: 100%; word-wrap: break-word; line-height: 1.2;
+        }
+
+        /* --- WINDOWS --- */
+        .window {
+            position: absolute;
+            background: var(--window-bg);
+            border: 3px solid #0058e6;
+            border-radius: 8px 8px 0 0;
+            box-shadow: 5px 5px 20px rgba(0,0,0,0.4);
+            display: none;
+            flex-direction: column;
+            z-index: 100;
+        }
+
+        .window-header {
+            background: linear-gradient(to bottom, #0058e6 0%, #003db3 100%);
+            padding: 4px 10px;
+            display: flex; justify-content: space-between; align-items: center;
+            color: white; font-weight: bold; font-size: 12px; cursor: move;
+        }
+
+        .win-controls { display: flex; gap: 2px; }
+        .win-btn {
+            width: 21px; height: 21px; border: 1px solid white; border-radius: 3px;
+            display: flex; align-items: center; justify-content: center; font-size: 10px; cursor: pointer;
+        }
+        .win-close { background: #e81123; }
+
+        .window-body {
+            padding: 0; background: white; margin: 2px; border: 1px solid #919b9c;
+            overflow-y: auto; max-height: 75vh;
+            display: flex; flex-direction: column;
+        }
+
+        /* --- CMS / CONTROL PANEL --- */
+        .cp-container { display: flex; min-height: 500px; width: 750px; background: white; }
+        .cp-sidebar {
+            width: 180px;
+            background: linear-gradient(to bottom, #7a9ee0 0%, #b3c8f0 100%);
+            padding: 15px;
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .cp-main { flex: 1; padding: 20px; overflow-y: auto; }
+        
+        .cp-box { background: white; border: 1px solid #7a9ee0; border-radius: 5px; padding: 10px; margin-bottom: 20px; }
+        .cp-box-title { font-weight: bold; color: #003096; font-size: 13px; margin-bottom: 10px; }
+        .cp-link { color: #003096; font-size: 12px; cursor: pointer; text-decoration: none; display: block; margin-bottom: 5px; }
+        .cp-link:hover { text-decoration: underline; }
+
+        .cms-list-item {
+            border: 1px solid #ccc; padding: 10px; margin-bottom: 5px;
+            display: flex; align-items: center; cursor: pointer; font-size: 13px; font-weight: bold;
+        }
+        .cms-list-item:hover { background: #f0f0f0; }
+
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 5px; }
+        .form-group input, .form-group textarea { width: 100%; padding: 5px; border: 1px solid #919b9c; font-family: inherit; }
+        
+        .btn { padding: 5px 15px; cursor: pointer; border: 1px solid #919b9c; background: #eee; font-size: 11px; }
+        .btn-primary { background: var(--xp-blue); color: white; border-color: #003096; }
+        .btn-success { background: #218521; color: white; border-color: #1a631a; }
+
+        .project-content { padding: 20px; color: #333; }
+        .media-container { width: 100%; aspect-ratio: 16/9; background: #000; margin: 15px 0; border: 1px solid #ccc; }
+        .media-container iframe { width: 100%; height: 100%; border: none; }
+
+        #loginModal {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: var(--window-bg); border: 3px solid #0058e6; border-radius: 8px 8px 0 0;
+            z-index: 20000; display: none; width: 300px; padding: 2px;
+        }
+
+        canvas { cursor: crosshair; background: #fff; }
+        .paint-toolbar { background: #f0f0f0; padding: 5px; display: flex; gap: 5px; border-bottom: 1px solid #ccc; }
+        .color-opt { width: 20px; height: 20px; cursor: pointer; border: 1px solid #000; }
+
+    
