@@ -1,8 +1,24 @@
         // --- CONFIGURATION DATA ---
         const PROJECTS_STORAGE_KEY = 'glass-desktop-projects-v1';
 
+        const FALLBACK_PROJECTS = [
+            {
+                id: 'about-me',
+                brand: 'Writer + ACD',
+                title: 'About Me',
+                icon: '👤',
+                desc: 'Project data fallback loaded because seed data was unavailable.',
+                stats: 'Fallback Seed',
+                video: '',
+                customIcon: 'assets/icons/about-me.svg'
+            }
+        ];
+
         function cloneSeedProjects() {
-            return window.seedProjects.map((project) => ({ ...project }));
+            const seed = Array.isArray(window.seedProjects) && window.seedProjects.length
+                ? window.seedProjects
+                : FALLBACK_PROJECTS;
+            return seed.map((project) => ({ ...project }));
         }
 
         function sanitizeProjects(candidateProjects) {
@@ -38,10 +54,14 @@
 
             try {
                 const parsed = JSON.parse(savedProjects);
-                return sanitizeProjects(parsed);
-                if (Array.isArray(parsed)) return parsed;
+                const sanitizedProjects = sanitizeProjects(parsed);
+                if (JSON.stringify(parsed) !== JSON.stringify(sanitizedProjects)) {
+                    localStorage.setItem(PROJECTS_STORAGE_KEY, JSON.stringify(sanitizedProjects));
+                }
+                return sanitizedProjects;
             } catch (err) {
                 console.warn('Ignoring invalid saved projects payload.', err);
+                localStorage.removeItem(PROJECTS_STORAGE_KEY);
             }
 
             return cloneSeedProjects();
@@ -51,9 +71,6 @@
 
         function persistProjects() {
             projects = sanitizeProjects(projects);
-        let projects = loadProjects();
-
-        function persistProjects() {
             localStorage.setItem(PROJECTS_STORAGE_KEY, JSON.stringify(projects));
         }
 
@@ -76,15 +93,47 @@
 
             localStorage.removeItem(PROJECTS_STORAGE_KEY);
             projects = sanitizeProjects(cloneSeedProjects());
-            projects = cloneSeedProjects();
             pendingIconData = null;
             updateDesktop();
             renderCMSList();
         }
 
+        function repairDesktopState() {
+            const savedProjects = localStorage.getItem(PROJECTS_STORAGE_KEY);
+            if (!savedProjects) {
+                alert('No local desktop state found. Nothing to repair.');
+                return;
+            }
+
+            try {
+                const parsed = JSON.parse(savedProjects);
+                const sanitizedProjects = sanitizeProjects(parsed);
+                const wasChanged = JSON.stringify(parsed) !== JSON.stringify(sanitizedProjects);
+
+                if (!wasChanged) {
+                    alert('Desktop state looks healthy. No repair needed.');
+                    return;
+                }
+
+                localStorage.setItem(PROJECTS_STORAGE_KEY, JSON.stringify(sanitizedProjects));
+                projects = sanitizedProjects;
+                pendingIconData = null;
+                updateDesktop();
+                if (document.getElementById('control-panel').style.display === 'flex') renderCMSList();
+                alert('Desktop state repaired. Invalid local entries were cleaned and good edits were preserved.');
+            } catch (err) {
+                localStorage.removeItem(PROJECTS_STORAGE_KEY);
+                projects = sanitizeProjects(cloneSeedProjects());
+                pendingIconData = null;
+                updateDesktop();
+                if (document.getElementById('control-panel').style.display === 'flex') renderCMSList();
+                alert('Desktop state was corrupted and has been reset to repository seed data.');
+            }
+        }
+
         window.exportProjectsForRepo = exportProjectsForRepo;
         window.resetLocalProjects = resetLocalProjects;
-        let projects = window.seedProjects.map((project) => ({ ...project }));
+        window.repairDesktopState = repairDesktopState;
 
         let currentWallpaper = '';
 
@@ -145,7 +194,6 @@
             main.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px"><h3 style="margin:0">Pick a project...</h3><button class="btn btn-primary" onclick="renderCMSEdit()">+ Add New</button></div><div id="cms-list"></div>`;
             const list = document.getElementById('cms-list');
             projects.sort((a,b) => (a.title || '').localeCompare(b.title || '')).forEach(p => {
-            projects.sort((a,b) => a.title.localeCompare(b.title)).forEach(p => {
                 const item = document.createElement('div'); item.className = 'cms-list-item';
                 item.innerText = `${p.brand} - ${p.title}`; item.onclick = () => renderCMSEdit(p.id);
                 list.appendChild(item);
@@ -157,7 +205,6 @@
             const p = id ? projects.find(proj => proj.id === id) : { brand: '', title: '', desc: '', video: '', icon: '⚙️', stats: '', customIcon: '' };
             const main = document.getElementById('cms-main');
             main.innerHTML = `<h3 style="margin-top:0">${id ? 'Edit ' + p.title : 'New Project'}</h3><div class="form-group"><label>Title:</label><input type="text" id="edit-title" value="${p.title}"></div><div class="form-group"><label>Brand:</label><input type="text" id="edit-brand" value="${p.brand}"></div><div class="form-group"><label>Stats:</label><input type="text" id="edit-stats" value="${p.stats}"></div><div class="form-group"><label>Description:</label><textarea id="edit-desc" rows="4">${p.desc}</textarea></div><div class="form-group"><label>Media Link:</label><input type="text" id="edit-video" value="${p.video || ''}"></div><div class="form-group"><label>Icon:</label><div style="display:flex; align-items:center; gap:10px"><div id="icon-preview" style="width:48px; height:48px; border:1px solid #ccc; background-size:contain; background-position:center; background-repeat:no-repeat; background-image:${p.customIcon ? 'url('+p.customIcon+')' : 'none'}">${p.customIcon ? '' : p.icon}</div><button class="btn" onclick="document.getElementById('projectIconInput').click()">Upload Icon</button></div><div style="margin-top:6px; font-size:11px; color:#666">Upload saves in this browser. Use "Export Project Data" to save changes back into the repo.</div></div><div class="form-actions"><button class="btn btn-primary" onclick="saveProject('${id}')">Apply Changes</button><button class="btn" onclick="renderCMSList()">Cancel</button></div>`;
-            main.innerHTML = `<h3 style="margin-top:0">${id ? 'Edit ' + p.title : 'New Project'}</h3><div class="form-group"><label>Title:</label><input type="text" id="edit-title" value="${p.title}"></div><div class="form-group"><label>Brand:</label><input type="text" id="edit-brand" value="${p.brand}"></div><div class="form-group"><label>Stats:</label><input type="text" id="edit-stats" value="${p.stats}"></div><div class="form-group"><label>Description:</label><textarea id="edit-desc" rows="4">${p.desc}</textarea></div><div class="form-group"><label>Media Link:</label><input type="text" id="edit-video" value="${p.video || ''}"></div><div class="form-group"><label>Icon:</label><div style="display:flex; align-items:center; gap:10px"><div id="icon-preview" style="width:48px; height:48px; border:1px solid #ccc; background-size:contain; background-position:center; background-repeat:no-repeat; background-image:${p.customIcon ? 'url('+p.customIcon+')' : 'none'}">${p.customIcon ? '' : p.icon}</div><button class="btn" onclick="document.getElementById('projectIconInput').click()">Upload Icon</button></div></div><div class="form-actions"><button class="btn btn-primary" onclick="saveProject('${id}')">Apply Changes</button><button class="btn" onclick="renderCMSList()">Cancel</button></div>`;
         }
 
         document.getElementById('projectIconInput').onchange = (e) => {
@@ -180,7 +227,6 @@
             pendingIconData = null;
             persistProjects();
             updateDesktop();
-            pendingIconData = null; updateDesktop();
         }
 
         const canvas = document.getElementById('paintCanvas'), ctx = canvas.getContext('2d');
