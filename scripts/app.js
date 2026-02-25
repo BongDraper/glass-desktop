@@ -1,4 +1,56 @@
         // --- CONFIGURATION DATA ---
+        const PROJECTS_STORAGE_KEY = 'glass-desktop-projects-v1';
+
+        function cloneSeedProjects() {
+            return window.seedProjects.map((project) => ({ ...project }));
+        }
+
+        function loadProjects() {
+            const savedProjects = localStorage.getItem(PROJECTS_STORAGE_KEY);
+            if (!savedProjects) return cloneSeedProjects();
+
+            try {
+                const parsed = JSON.parse(savedProjects);
+                if (Array.isArray(parsed)) return parsed;
+            } catch (err) {
+                console.warn('Ignoring invalid saved projects payload.', err);
+            }
+
+            return cloneSeedProjects();
+        }
+
+        let projects = loadProjects();
+
+        function persistProjects() {
+            localStorage.setItem(PROJECTS_STORAGE_KEY, JSON.stringify(projects));
+        }
+
+        function exportProjectsForRepo() {
+            const scriptContent = `window.seedProjects = ${JSON.stringify(projects, null, 4)};
+`;
+            const blob = new Blob([scriptContent], { type: 'application/javascript' });
+            const url = URL.createObjectURL(blob);
+            const downloadLink = document.createElement('a');
+            downloadLink.href = url;
+            downloadLink.download = 'projects-data.js';
+            downloadLink.click();
+            URL.revokeObjectURL(url);
+            alert('Downloaded projects-data.js. Replace scripts/projects-data.js in your repo and commit it.');
+        }
+
+        function resetLocalProjects() {
+            const shouldReset = confirm('Reset all local project/icon edits back to the repository seed data?');
+            if (!shouldReset) return;
+
+            localStorage.removeItem(PROJECTS_STORAGE_KEY);
+            projects = cloneSeedProjects();
+            pendingIconData = null;
+            updateDesktop();
+            renderCMSList();
+        }
+
+        window.exportProjectsForRepo = exportProjectsForRepo;
+        window.resetLocalProjects = resetLocalProjects;
         let projects = window.seedProjects.map((project) => ({ ...project }));
 
         let currentWallpaper = '';
@@ -69,6 +121,7 @@
         function renderCMSEdit(id = null) {
             const p = id ? projects.find(proj => proj.id === id) : { brand: '', title: '', desc: '', video: '', icon: '⚙️', stats: '', customIcon: '' };
             const main = document.getElementById('cms-main');
+            main.innerHTML = `<h3 style="margin-top:0">${id ? 'Edit ' + p.title : 'New Project'}</h3><div class="form-group"><label>Title:</label><input type="text" id="edit-title" value="${p.title}"></div><div class="form-group"><label>Brand:</label><input type="text" id="edit-brand" value="${p.brand}"></div><div class="form-group"><label>Stats:</label><input type="text" id="edit-stats" value="${p.stats}"></div><div class="form-group"><label>Description:</label><textarea id="edit-desc" rows="4">${p.desc}</textarea></div><div class="form-group"><label>Media Link:</label><input type="text" id="edit-video" value="${p.video || ''}"></div><div class="form-group"><label>Icon:</label><div style="display:flex; align-items:center; gap:10px"><div id="icon-preview" style="width:48px; height:48px; border:1px solid #ccc; background-size:contain; background-position:center; background-repeat:no-repeat; background-image:${p.customIcon ? 'url('+p.customIcon+')' : 'none'}">${p.customIcon ? '' : p.icon}</div><button class="btn" onclick="document.getElementById('projectIconInput').click()">Upload Icon</button></div><div style="margin-top:6px; font-size:11px; color:#666">Upload saves in this browser. Use "Export Project Data" to save changes back into the repo.</div></div><div class="form-actions"><button class="btn btn-primary" onclick="saveProject('${id}')">Apply Changes</button><button class="btn" onclick="renderCMSList()">Cancel</button></div>`;
             main.innerHTML = `<h3 style="margin-top:0">${id ? 'Edit ' + p.title : 'New Project'}</h3><div class="form-group"><label>Title:</label><input type="text" id="edit-title" value="${p.title}"></div><div class="form-group"><label>Brand:</label><input type="text" id="edit-brand" value="${p.brand}"></div><div class="form-group"><label>Stats:</label><input type="text" id="edit-stats" value="${p.stats}"></div><div class="form-group"><label>Description:</label><textarea id="edit-desc" rows="4">${p.desc}</textarea></div><div class="form-group"><label>Media Link:</label><input type="text" id="edit-video" value="${p.video || ''}"></div><div class="form-group"><label>Icon:</label><div style="display:flex; align-items:center; gap:10px"><div id="icon-preview" style="width:48px; height:48px; border:1px solid #ccc; background-size:contain; background-position:center; background-repeat:no-repeat; background-image:${p.customIcon ? 'url('+p.customIcon+')' : 'none'}">${p.customIcon ? '' : p.icon}</div><button class="btn" onclick="document.getElementById('projectIconInput').click()">Upload Icon</button></div></div><div class="form-actions"><button class="btn btn-primary" onclick="saveProject('${id}')">Apply Changes</button><button class="btn" onclick="renderCMSList()">Cancel</button></div>`;
         }
 
@@ -76,6 +129,7 @@
             const reader = new FileReader();
             reader.onload = (ev) => { pendingIconData = ev.target.result; const prev = document.getElementById('icon-preview'); prev.style.backgroundImage = `url(${pendingIconData})`; prev.innerText = ''; };
             reader.readAsDataURL(e.target.files[0]);
+            e.target.value = '';
         };
 
         function saveProject(id) {
@@ -87,6 +141,9 @@
             } else {
                 projects.push({ id: 'p-' + Date.now(), title, brand, stats, desc, video, icon: '📂', customIcon: pendingIconData });
             }
+            pendingIconData = null;
+            persistProjects();
+            updateDesktop();
             pendingIconData = null; updateDesktop();
         }
 
