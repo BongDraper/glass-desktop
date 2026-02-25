@@ -5,12 +5,40 @@
             return window.seedProjects.map((project) => ({ ...project }));
         }
 
+        function sanitizeProjects(candidateProjects) {
+            if (!Array.isArray(candidateProjects)) return cloneSeedProjects();
+
+            const normalizedProjects = candidateProjects
+                .map((rawProject, index) => {
+                    if (!rawProject || typeof rawProject !== 'object') return null;
+
+                    const normalizedId = (typeof rawProject.id === 'string' && rawProject.id.trim())
+                        ? rawProject.id.trim()
+                        : `p-local-${index}`;
+
+                    return {
+                        id: normalizedId,
+                        brand: typeof rawProject.brand === 'string' ? rawProject.brand : '',
+                        title: typeof rawProject.title === 'string' && rawProject.title.trim() ? rawProject.title : 'Untitled Project',
+                        icon: typeof rawProject.icon === 'string' ? rawProject.icon : '📂',
+                        desc: typeof rawProject.desc === 'string' ? rawProject.desc : '',
+                        stats: typeof rawProject.stats === 'string' ? rawProject.stats : '',
+                        video: typeof rawProject.video === 'string' ? rawProject.video : '',
+                        customIcon: typeof rawProject.customIcon === 'string' ? rawProject.customIcon : ''
+                    };
+                })
+                .filter(Boolean);
+
+            return normalizedProjects.length ? normalizedProjects : cloneSeedProjects();
+        }
+
         function loadProjects() {
             const savedProjects = localStorage.getItem(PROJECTS_STORAGE_KEY);
             if (!savedProjects) return cloneSeedProjects();
 
             try {
                 const parsed = JSON.parse(savedProjects);
+                return sanitizeProjects(parsed);
                 if (Array.isArray(parsed)) return parsed;
             } catch (err) {
                 console.warn('Ignoring invalid saved projects payload.', err);
@@ -19,6 +47,10 @@
             return cloneSeedProjects();
         }
 
+        let projects = sanitizeProjects(loadProjects());
+
+        function persistProjects() {
+            projects = sanitizeProjects(projects);
         let projects = loadProjects();
 
         function persistProjects() {
@@ -43,6 +75,7 @@
             if (!shouldReset) return;
 
             localStorage.removeItem(PROJECTS_STORAGE_KEY);
+            projects = sanitizeProjects(cloneSeedProjects());
             projects = cloneSeedProjects();
             pendingIconData = null;
             updateDesktop();
@@ -67,6 +100,7 @@
             grid.appendChild(pIcon);
 
             projects.forEach(p => {
+                if (!p || !p.id) return;
                 const icon = document.createElement('div');
                 icon.className = 'desktop-icon';
                 icon.onclick = () => openProjectWindow(p.id);
@@ -110,6 +144,7 @@
             const main = document.getElementById('cms-main');
             main.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px"><h3 style="margin:0">Pick a project...</h3><button class="btn btn-primary" onclick="renderCMSEdit()">+ Add New</button></div><div id="cms-list"></div>`;
             const list = document.getElementById('cms-list');
+            projects.sort((a,b) => (a.title || '').localeCompare(b.title || '')).forEach(p => {
             projects.sort((a,b) => a.title.localeCompare(b.title)).forEach(p => {
                 const item = document.createElement('div'); item.className = 'cms-list-item';
                 item.innerText = `${p.brand} - ${p.title}`; item.onclick = () => renderCMSEdit(p.id);
@@ -136,6 +171,7 @@
             const title = document.getElementById('edit-title').value, brand = document.getElementById('edit-brand').value, stats = document.getElementById('edit-stats').value, desc = document.getElementById('edit-desc').value, video = document.getElementById('edit-video').value;
             if (id && id !== 'null') {
                 const p = projects.find(proj => proj.id === id);
+                if (!p) return;
                 Object.assign(p, { title, brand, stats, desc, video });
                 if (pendingIconData) p.customIcon = pendingIconData;
             } else {
