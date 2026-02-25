@@ -39,6 +39,7 @@
             try {
                 const parsed = JSON.parse(savedProjects);
                 return sanitizeProjects(parsed);
+                if (Array.isArray(parsed)) return parsed;
             } catch (err) {
                 console.warn('Ignoring invalid saved projects payload.', err);
             }
@@ -50,6 +51,9 @@
 
         function persistProjects() {
             projects = sanitizeProjects(projects);
+        let projects = loadProjects();
+
+        function persistProjects() {
             localStorage.setItem(PROJECTS_STORAGE_KEY, JSON.stringify(projects));
         }
 
@@ -72,6 +76,7 @@
 
             localStorage.removeItem(PROJECTS_STORAGE_KEY);
             projects = sanitizeProjects(cloneSeedProjects());
+            projects = cloneSeedProjects();
             pendingIconData = null;
             updateDesktop();
             renderCMSList();
@@ -79,6 +84,7 @@
 
         window.exportProjectsForRepo = exportProjectsForRepo;
         window.resetLocalProjects = resetLocalProjects;
+        let projects = window.seedProjects.map((project) => ({ ...project }));
 
         let currentWallpaper = '';
 
@@ -139,6 +145,7 @@
             main.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px"><h3 style="margin:0">Pick a project...</h3><button class="btn btn-primary" onclick="renderCMSEdit()">+ Add New</button></div><div id="cms-list"></div>`;
             const list = document.getElementById('cms-list');
             projects.sort((a,b) => (a.title || '').localeCompare(b.title || '')).forEach(p => {
+            projects.sort((a,b) => a.title.localeCompare(b.title)).forEach(p => {
                 const item = document.createElement('div'); item.className = 'cms-list-item';
                 item.innerText = `${p.brand} - ${p.title}`; item.onclick = () => renderCMSEdit(p.id);
                 list.appendChild(item);
@@ -150,6 +157,7 @@
             const p = id ? projects.find(proj => proj.id === id) : { brand: '', title: '', desc: '', video: '', icon: '⚙️', stats: '', customIcon: '' };
             const main = document.getElementById('cms-main');
             main.innerHTML = `<h3 style="margin-top:0">${id ? 'Edit ' + p.title : 'New Project'}</h3><div class="form-group"><label>Title:</label><input type="text" id="edit-title" value="${p.title}"></div><div class="form-group"><label>Brand:</label><input type="text" id="edit-brand" value="${p.brand}"></div><div class="form-group"><label>Stats:</label><input type="text" id="edit-stats" value="${p.stats}"></div><div class="form-group"><label>Description:</label><textarea id="edit-desc" rows="4">${p.desc}</textarea></div><div class="form-group"><label>Media Link:</label><input type="text" id="edit-video" value="${p.video || ''}"></div><div class="form-group"><label>Icon:</label><div style="display:flex; align-items:center; gap:10px"><div id="icon-preview" style="width:48px; height:48px; border:1px solid #ccc; background-size:contain; background-position:center; background-repeat:no-repeat; background-image:${p.customIcon ? 'url('+p.customIcon+')' : 'none'}">${p.customIcon ? '' : p.icon}</div><button class="btn" onclick="document.getElementById('projectIconInput').click()">Upload Icon</button></div><div style="margin-top:6px; font-size:11px; color:#666">Upload saves in this browser. Use "Export Project Data" to save changes back into the repo.</div></div><div class="form-actions"><button class="btn btn-primary" onclick="saveProject('${id}')">Apply Changes</button><button class="btn" onclick="renderCMSList()">Cancel</button></div>`;
+            main.innerHTML = `<h3 style="margin-top:0">${id ? 'Edit ' + p.title : 'New Project'}</h3><div class="form-group"><label>Title:</label><input type="text" id="edit-title" value="${p.title}"></div><div class="form-group"><label>Brand:</label><input type="text" id="edit-brand" value="${p.brand}"></div><div class="form-group"><label>Stats:</label><input type="text" id="edit-stats" value="${p.stats}"></div><div class="form-group"><label>Description:</label><textarea id="edit-desc" rows="4">${p.desc}</textarea></div><div class="form-group"><label>Media Link:</label><input type="text" id="edit-video" value="${p.video || ''}"></div><div class="form-group"><label>Icon:</label><div style="display:flex; align-items:center; gap:10px"><div id="icon-preview" style="width:48px; height:48px; border:1px solid #ccc; background-size:contain; background-position:center; background-repeat:no-repeat; background-image:${p.customIcon ? 'url('+p.customIcon+')' : 'none'}">${p.customIcon ? '' : p.icon}</div><button class="btn" onclick="document.getElementById('projectIconInput').click()">Upload Icon</button></div></div><div class="form-actions"><button class="btn btn-primary" onclick="saveProject('${id}')">Apply Changes</button><button class="btn" onclick="renderCMSList()">Cancel</button></div>`;
         }
 
         document.getElementById('projectIconInput').onchange = (e) => {
@@ -172,6 +180,7 @@
             pendingIconData = null;
             persistProjects();
             updateDesktop();
+            pendingIconData = null; updateDesktop();
         }
 
         const canvas = document.getElementById('paintCanvas'), ctx = canvas.getContext('2d');
